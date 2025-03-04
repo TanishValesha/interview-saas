@@ -193,8 +193,8 @@ function JobForm() {
                     />
                   </FormControl>
                   <FormDescription className="text-gray-500">
-                    This field is optional but helps attract the right
-                    candidates.
+                    This field is optional but helps generating possible
+                    interview questions
                   </FormDescription>
                   <FormMessage className="text-red-400" />
                 </FormItem>

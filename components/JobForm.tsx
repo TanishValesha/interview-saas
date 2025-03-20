@@ -10,9 +10,8 @@ import {
   Code,
   FileText,
   Star,
-  BarChart,
-  Sparkle,
   Sparkles,
+  Loader2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -43,12 +41,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { generateResponse } from "./API";
+import createMasterPrompt from "./masterPrompt";
 
 const formSchema = z.object({
   jobTitle: z.string().min(2, {
     message: "Job title must be at least 2 characters.",
   }),
-  experienceLevel: z.string({
+  experienceLevel: z.enum(["entry", "mid", "senior", "lead"], {
     required_error: "Please select an experience level.",
   }),
   jobDescription: z.string().min(10, {
@@ -58,7 +58,7 @@ const formSchema = z.object({
   requiredSkills: z.string().min(2, {
     message: "Required skills must be at least 2 characters.",
   }),
-  difficultyLevel: z.string({
+  difficultyLevel: z.enum(["easy", "medium", "hard"], {
     required_error: "Please select a difficulty level.",
   }),
 });
@@ -70,28 +70,52 @@ function JobForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       jobTitle: "",
-      experienceLevel: "",
+      experienceLevel: "entry" as "entry" | "mid" | "senior" | "lead",
       jobDescription: "",
       companyDescription: "",
       requiredSkills: "",
-      difficultyLevel: "easy",
+      difficultyLevel: "easy" as "easy" | "medium" | "hard",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    const {
+      jobTitle,
+      experienceLevel,
+      jobDescription,
+      companyDescription,
+      requiredSkills,
+      difficultyLevel,
+    } = values;
+    const prompt = createMasterPrompt({
+      jobTitle,
+      experienceLevel,
+      jobDescription,
+      companyDescription,
+      requiredSkills,
+      difficultyLevel,
+    });
+    const response = await fetch("http://localhost:3000/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+    });
 
-    // Simulate form submission
-    setTimeout(() => {
-      toast.success("Job posting created successfully!");
+    const questions = await response.json();
+    if (questions.success) {
       setIsSubmitting(false);
-      form.reset();
-    }, 2000);
+      toast.success("Interview questions generated successfully.");
+    } else {
+      toast.error("Failed to generate interview questions.");
+    }
   }
 
   return (
     // <div className="min-h-screen flex items-center justify-center bg-black text-white p-4">
-    <Card className="w-full shadow-lg border-black bg-black text-white ">
+    <Card className="w-full shadow-lg border-black bg-black text-white font-medium">
       <CardHeader className="space-y-1 border-b border-black">
         <CardTitle className="text-2xl font-bold flex items-center gap-2 text-white">
           <Briefcase className="h-6 w-6" />
@@ -117,7 +141,7 @@ function JobForm() {
                     <Input
                       placeholder="e.g. Senior Frontend Developer"
                       {...field}
-                      className="bg-black border-gray-700 text-white placeholder:text-gray-500"
+                      className="bg-black border-gray-700 text-white placeholder:text-gray-500 placeholder:font-medium"
                     />
                   </FormControl>
                   <FormMessage className="text-red-400" />
@@ -167,7 +191,7 @@ function JobForm() {
                   <FormControl>
                     <Textarea
                       placeholder="Describe the job responsibilities and requirements"
-                      className="min-h-[120px] bg-black border-gray-700 text-white placeholder:text-gray-500"
+                      className="min-h-[120px] bg-black border-gray-700 text-white placeholder:text-gray-500 placeholder:font-medium"
                       {...field}
                     />
                   </FormControl>
@@ -188,7 +212,7 @@ function JobForm() {
                   <FormControl>
                     <Textarea
                       placeholder="Tell candidates about your company culture and values"
-                      className="min-h-[100px] bg-black border-gray-700 text-white placeholder:text-gray-500"
+                      className="min-h-[100px] bg-black border-gray-700 text-white placeholder:text-gray-500 placeholder:font-medium"
                       {...field}
                     />
                   </FormControl>
@@ -213,7 +237,7 @@ function JobForm() {
                   <FormControl>
                     <Textarea
                       placeholder="List the required skills (e.g. React, Node.js, TypeScript)"
-                      className="min-h-[80px] bg-black border-gray-700 text-white placeholder:text-gray-500"
+                      className="min-h-[80px] bg-black border-gray-700 text-white placeholder:text-gray-500 placeholder:font-medium"
                       {...field}
                     />
                   </FormControl>
@@ -353,7 +377,10 @@ function JobForm() {
               className="w-full bg-white text-black hover:bg-gray-200"
               disabled={isSubmitting}
             >
-              <span>
+              <span className="flex items-center justify-center gap-2">
+                {isSubmitting && (
+                  <Loader2 className="animate-spin text-black" />
+                )}
                 <Sparkles />
               </span>
               {isSubmitting ? "Generating..." : "Generate Interview Questions"}

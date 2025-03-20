@@ -1,141 +1,106 @@
+"use client";
+import React, { useState } from "react";
+import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
-import {
-  CreditCard,
-  HelpCircle,
-  LogOut,
-  MessageSquarePlus,
-  Plus,
-  Settings,
-  Sparkles,
-  Users,
-} from "lucide-react";
+  IconArrowLeft,
+  IconBrandTabler,
+  IconSettings,
+  IconUserBolt,
+} from "@tabler/icons-react";
+import Image from "next/image";
 
-export function AppSidebar() {
+export function SidebarDemo() {
+  const links = [
+    {
+      label: "Dashboard",
+      href: "#",
+      icon: (
+        <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Profile",
+      href: "#",
+      icon: (
+        <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Settings",
+      href: "#",
+      icon: (
+        <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Logout",
+      href: "#",
+      icon: (
+        <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+  ];
+
+  const [open, setOpen] = useState(true); // Sidebar open by default
+
   return (
-    <Sidebar className="bg-black shadow-lg">
-      <SidebarContent className="bg-black text-white">Select</SidebarContent>
-    </Sidebar>
+    <div className="flex h-screen">
+      {/* Sidebar aligned to the left */}
+      <Sidebar open={open} setOpen={setOpen}>
+        <SidebarBody className="flex flex-col justify-between h-full bg-black">
+          <div className="flex flex-1 flex-col overflow-hidden">
+            {/* {open ? <Logo /> : <LogoIcon />} */}
+            <div className="mt-8 flex flex-col gap-2">
+              {links.map((link, idx) => (
+                <SidebarLink key={idx} link={link} />
+              ))}
+            </div>
+          </div>
+          <div className="p-4">
+            <SidebarLink
+              link={{
+                label: "Manu Arora",
+                href: "#",
+                icon: (
+                  <Image
+                    src="https://assets.aceternity.com/manu.png"
+                    className="h-7 w-7 rounded-full"
+                    width={50}
+                    height={50}
+                    alt="Avatar"
+                  />
+                ),
+              }}
+            />
+          </div>
+        </SidebarBody>
+      </Sidebar>
+    </div>
   );
 }
 
-// {/* Sidebar Container */}
-// <div className="flex flex-col w-[275px] h-full border-r border-gray-800 bg-black overflow-hidden rounded-md">
-//     {/* Sidebar content */}
+// export const Logo = () => {
+//   return (
+//     <Link
+//       href="#"
+//       className="flex items-center space-x-2 py-2 text-sm font-normal text-black"
+//     >
+//       <div className="h-5 w-6 rounded-lg bg-black dark:bg-white" />
+//       <motion.span
+//         initial={{ opacity: 0 }}
+//         animate={{ opacity: 1 }}
+//         className="font-medium text-black dark:text-white"
+//       >
+//         Acet Labs
+//       </motion.span>
+//     </Link>
+//   );
+// };
 
-//     {/* Logo */}
-//     <div className="p-5 pb-4">
-//         <div className="text-2xl font-bold">bolt</div>
-//     </div>
-
-//     {/* New Chat Button */}
-//     <div className="px-4 mb-4">
-//         <button className="flex items-center gap-2 bg-[#1a2734] hover:bg-[#243242] text-blue-400 rounded-md py-2 px-4 w-full transition-colors">
-//             <MessageSquarePlus size={18} />
-//             <span>Start new chat</span>
-//         </button>
-//     </div>
-
-//     {/* Search */}
-//     <div className="px-4 mb-4">
-//         <div className="relative">
-//             <input
-//                 type="text"
-//                 placeholder="Search"
-//                 className="w-full bg-[#222] border border-gray-700 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-//             />
-//         </div>
-//     </div>
-
-//     {/* Chat History */}
-//     <div className="flex-1 overflow-y-auto">
-//         <div className="px-4 mb-2">
-//             <h3 className="text-sm font-medium">Your Chats</h3>
-//         </div>
-
-//         <div className="mb-4">
-//             <div className="px-4 py-1 text-xs text-gray-400">Yesterday</div>
-//             <div className="px-4 py-1.5 text-sm hover:bg-[#1a2734] cursor-pointer">
-//                 Create Online Auction Dashboard
-//             </div>
-//         </div>
-
-//         <div className="mb-4">
-//             <div className="px-4 py-1 text-xs text-gray-400">Thursday</div>
-//             <div className="px-4 py-1.5 text-sm hover:bg-[#1a2734] cursor-pointer">
-//                 Create Testimonial Component with Float
-//             </div>
-//         </div>
-
-//         <div className="mb-4">
-//             <div className="px-4 py-1 text-xs text-gray-400">
-//                 Last 30 Days
-//             </div>
-//             <div className="px-4 py-1.5 text-sm hover:bg-[#1a2734] cursor-pointer">
-//                 Authentication Form for Auction Platform
-//             </div>
-//             <div className="px-4 py-1.5 text-sm hover:bg-[#1a2734] cursor-pointer">
-//                 Autoplay Carousel with Navigation
-//             </div>
-//             <div className="px-4 py-1.5 text-sm hover:bg-[#1a2734] cursor-pointer">
-//                 Road Construction Progress Tracker Front
-//             </div>
-//         </div>
-
-//         <div className="mb-4">
-//             <div className="px-4 py-1 text-xs text-gray-400">January</div>
-//             <div className="px-4 py-1.5 text-sm hover:bg-[#1a2734] cursor-pointer">
-//                 Create Complaint Submission Form
-//             </div>
-//             <div className="px-4 py-1.5 text-sm hover:bg-[#1a2734] cursor-pointer"></div>
-//                 Setting up a Complaint Management System
-//             </div>
-//         </div>
-//     </div>
-
-//     {/* Bottom Navigation */}
-//     <div className="border-t border-gray-800">
-//         <div className="p-3 flex items-center gap-2 text-sm text-green-400 hover:bg-[#1a2734] cursor-pointer">
-//             <Sparkles size={18} />
-//             <span>Get free tokens</span>
-//         </div>
-//         <div className="p-3 flex items-center gap-2 text-sm hover:bg-[#1a2734] cursor-pointer">
-//             <Settings size={18} />
-//             <span>Settings</span>
-//         </div>
-//         <div className="p-3 flex items-center gap-2 text-sm hover:bg-[#1a2734] cursor-pointer">
-//             <HelpCircle size={18} />
-//             <span>Help Center</span>
-//         </div>
-//         <div className="p-3 flex items-center gap-2 text-sm hover:bg-[#1a2734] cursor-pointer">
-//             <CreditCard size={18} />
-//             <span>My Subscription</span>
-//         </div>
-//         <div className="p-3 flex items-center gap-2 text-sm hover:bg-[#1a2734] cursor-pointer">
-//             <Users size={18} />
-//             <span>Select Account</span>
-//         </div>
-//         <div className="p-3 flex items-center gap-2 text-sm hover:bg-[#1a2734] cursor-pointer">
-//             <LogOut size={18} />
-//             <span>Sign Out</span>
-//         </div>
-//     </div>
-
-//     {/* User Profile */}
-//     <div className="p-3 border-t border-gray-800 flex items-center gap-3">
-//         <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-medium">
-//             T
-//         </div>
-//         <div>
-//             <div className="text-sm font-medium">Tanish Valesha</div>
-//             <div className="text-xs text-gray-400">Personal Plan</div>
-//         </div>
-//     </div>
-// </div>
+// export const LogoIcon = () => {
+//   return (
+//     <Link href="#" className="flex items-center py-2">
+//       <div className="h-5 w-6 rounded-lg bg-black dark:bg-white" />
+//     </Link>
+//   );
+// };

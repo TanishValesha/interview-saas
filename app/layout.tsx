@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/Sidebar";
-import { BackgroundBeams } from "@/components/ui/background-beams";
+
+import { SidebarDemo } from "@/components/Sidebar";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,14 +28,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased relative min-h-screen w-full overflow-hidden bg-black flex`}
       >
-        <SidebarProvider defaultOpen={true}>
-          <AppSidebar />
-          <SidebarTrigger className="bg-black text-white" />
-          {children}
-          <BackgroundBeams className="-z-10" />
-        </SidebarProvider>
+        {/* Blue gradient spot */}
+        <Toaster richColors position="top-right" />
+        <div
+          className="absolute right-0 top-0 w-[1500px] h-[400px] rounded-full translate-x-1/4 translate-y-[-50%]"
+          style={{
+            background: `radial-gradient(circle, rgba(0,149,189,0.7) 0%, rgba(0,149,189,0.2) 40%, rgba(0,0,0,0) 70%)`,
+            filter: "blur(100px)",
+          }}
+        />
+        <SidebarDemo />
+        <div className="flex-1">{children}</div>
       </body>
     </html>
   );

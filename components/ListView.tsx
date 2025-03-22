@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { apiUrl } from "./libs/apiUrl";
+import Link from "next/link";
 
 export default function ListView({ slug }: { slug: string }) {
   const [completedQuestions, setCompletedQuestions] = useState<number[]>([1]);
@@ -35,7 +36,8 @@ export default function ListView({ slug }: { slug: string }) {
         <h1 className="text-2xl font-bold mb-6">Interview Questions</h1>
         <div className="space-y-4">
           {questions.map((question, index) => (
-            <div
+            <Link
+              href={`/question/${question.id}`}
               key={question.id}
               className="flex items-start gap-4 p-6 bg-neutral-900 rounded-lg hover:bg-neutral-950 hover:scale-101 duration-200 cursor-pointer"
               onClick={() => toggleCompleted(question.id)}
@@ -54,7 +56,7 @@ export default function ListView({ slug }: { slug: string }) {
                   </div>
                 )}
               </div> */}
-            </div>
+            </Link>
           ))}
         </div>
       </div>

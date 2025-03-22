@@ -43,7 +43,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import createMasterPrompt from "./libs/masterPrompt";
+import createMasterPrompt from "./prompts/masterPrompt";
 import { apiUrl } from "./libs/apiUrl";
 
 const formSchema = z.object({

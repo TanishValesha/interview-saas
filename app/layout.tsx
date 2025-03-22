@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased relative min-h-screen w-full overflow-hidden bg-black flex`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased relative min-h-screen w-full overflow-hidden bg-black flex`}
       >
         {/* Blue gradient spot */}
         <Toaster richColors position="top-right" />

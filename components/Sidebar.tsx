@@ -7,7 +7,7 @@ import {
   IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
-import Image from "next/image";
+// import Image from "next/image";
 
 export function SidebarDemo() {
   const links = [
@@ -47,7 +47,7 @@ export function SidebarDemo() {
     <div className="flex h-screen">
       {/* Sidebar aligned to the left */}
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="flex flex-col justify-between h-full bg-black">
+        <SidebarBody className="flex flex-col justify-between h-full bg-neutral-950">
           <div className="flex flex-1 flex-col overflow-hidden">
             {/* {open ? <Logo /> : <LogoIcon />} */}
             <div className="mt-8 flex flex-col gap-2">
@@ -56,7 +56,7 @@ export function SidebarDemo() {
               ))}
             </div>
           </div>
-          <div className="p-4">
+          {/* <div className="p-4">
             <SidebarLink
               link={{
                 label: "Manu Arora",
@@ -72,7 +72,7 @@ export function SidebarDemo() {
                 ),
               }}
             />
-          </div>
+          </div> */}
         </SidebarBody>
       </Sidebar>
     </div>

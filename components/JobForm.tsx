@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -12,6 +13,7 @@ import {
   Star,
   Sparkles,
   Loader2,
+  BarChart,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -41,8 +43,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { generateResponse } from "./API";
-import createMasterPrompt from "./masterPrompt";
+import createMasterPrompt from "./libs/masterPrompt";
+import { apiUrl } from "./libs/apiUrl";
 
 const formSchema = z.object({
   jobTitle: z.string().min(2, {
@@ -65,6 +67,7 @@ const formSchema = z.object({
 
 function JobForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -88,6 +91,24 @@ function JobForm() {
       requiredSkills,
       difficultyLevel,
     } = values;
+
+    const requiredSkillsArray = requiredSkills.split(",");
+    const interviewResponse = await fetch(`${apiUrl}/interview/save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jobTitle,
+        experienceLevel,
+        jobDescription,
+        companyDescription,
+        requiredSkills: requiredSkillsArray,
+        difficultyLevel,
+      }),
+    });
+    const interviewResponseData = await interviewResponse.json();
+
     const prompt = createMasterPrompt({
       jobTitle,
       experienceLevel,
@@ -96,7 +117,7 @@ function JobForm() {
       requiredSkills,
       difficultyLevel,
     });
-    const response = await fetch("http://localhost:3000/api/generate", {
+    const response = await fetch(`${apiUrl}/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -105,9 +126,24 @@ function JobForm() {
     });
 
     const questions = await response.json();
-    if (questions.success) {
+    const questionsArray = JSON.parse(questions.data);
+
+    const saveQuestions = await fetch(`${apiUrl}/generate/save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        interviewId: interviewResponseData.data.id,
+        questions: questionsArray,
+      }),
+    });
+
+    if (saveQuestions.status === 200 && interviewResponse.status === 200) {
       setIsSubmitting(false);
       toast.success("Interview questions generated successfully.");
+
+      router.push(`/interview/${interviewResponseData.data.id}`);
     } else {
       toast.error("Failed to generate interview questions.");
     }
@@ -115,8 +151,8 @@ function JobForm() {
 
   return (
     // <div className="min-h-screen flex items-center justify-center bg-black text-white p-4">
-    <Card className="w-full shadow-lg border-black bg-black text-white font-medium">
-      <CardHeader className="space-y-1 border-b border-black">
+    <Card className="w-full shadow-lg bg-transparent border-none text-white font-medium">
+      <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold flex items-center gap-2 text-white">
           <Briefcase className="h-6 w-6" />
           Create Job Interview Questions
@@ -252,7 +288,7 @@ function JobForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2 text-white">
-                    <Star className="h-4 w-4" />
+                    <BarChart className="h-4 w-4" />
                     Difficulty Level
                   </FormLabel>
                   <Select
@@ -266,7 +302,7 @@ function JobForm() {
                     </FormControl>
                     <SelectContent className="bg-black border-gray-700 text-white">
                       <SelectItem value="easy">Easy</SelectItem>
-                      <SelectItem value="mid">Medium</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
                       <SelectItem value="hard">Hard</SelectItem>
                     </SelectContent>
                   </Select>

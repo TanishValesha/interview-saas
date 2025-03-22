@@ -32,7 +32,6 @@ const groq = new Groq({
   apiKey:
     process.env.GROQ_API_KEY ||
     "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",
-  dangerouslyAllowBrowser: true,
 });
 
 export async function generateResponse(prompt: string) {

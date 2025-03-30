@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check } from "lucide-react";
+import { Loader } from "lucide-react";
 import { apiUrl } from "./libs/apiUrl";
 import Link from "next/link";
 
 export default function ListView({ slug }: { slug: string }) {
   const [completedQuestions, setCompletedQuestions] = useState<number[]>([1]);
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<{ id: number; text: string }[]>(
+    []
+  );
   useEffect(() => {
     async function fetchData() {
       // Fetch questions from API
@@ -29,6 +31,14 @@ export default function ListView({ slug }: { slug: string }) {
       setCompletedQuestions([...completedQuestions, id]);
     }
   };
+
+  if (questions.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-screen animate-spin text-white ">
+        <Loader className="w-7 h-7" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen text-gray-100 dark">

@@ -44,7 +44,7 @@ export function SidebarDemo() {
   const [open, setOpen] = useState(true); // Sidebar open by default
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-100vh">
       {/* Sidebar aligned to the left */}
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="flex flex-col justify-between h-full bg-neutral-950">

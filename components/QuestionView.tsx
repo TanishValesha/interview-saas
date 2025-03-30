@@ -3,25 +3,37 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, ChevronDown, Loader, Mic } from "lucide-react";
+import { ArrowLeft, Loader, Mic } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import {} from "@/components/ui/collapsible";
 import { Question } from "@/types/Question";
 import { apiUrl } from "./libs/apiUrl";
 import { toast } from "sonner";
 import { createInterviewAnswerPrompt } from "./prompts/questionAnswerPrompt";
 import { createAnswerEvaluationPrompt } from "./prompts/answerEvluationPrompt";
+import FeedbackView from "./FeedbackView";
+import { useDeepgram } from "./useDeepgrm";
 
 export default function QuestionView({ id }: { id: string }) {
   const [answer, setAnswer] = useState("");
   const [questionData, setQuestionData] = useState<Question>();
   const [b1loading, setb1Loading] = useState(false);
   const [b2loading, setb2Loading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [prevTranscript, setPrevTranscript] = useState("");
+  const [transcript, setTranscript] = useState("");
+
   const router = useRouter();
+
+  const { start, stop, listening } = useDeepgram((newTranscript) => {
+    const added = newTranscript.replace(prevTranscript, "").trim();
+    if (added) {
+      setAnswer((prev) => prev + " " + added);
+      setPrevTranscript(newTranscript);
+    }
+    setTranscript(newTranscript);
+  });
+
   useEffect(() => {
     async function fetchData() {
       // Fetch question from API
@@ -52,11 +64,9 @@ export default function QuestionView({ id }: { id: string }) {
       data = await response.json();
       setQuestionData(data.data);
       toast.success(data.message);
-      setb1Loading(false);
     } else {
       console.error("Failed to submit answer");
       toast.error("Failed to submit answer");
-      setb1Loading(false);
     }
     console.log(questionData);
 
@@ -79,8 +89,18 @@ export default function QuestionView({ id }: { id: string }) {
       if (response.ok) {
         const data = await response.json();
         console.log(data.data);
-        setb1Loading(false);
-        toast.success("Feedback Generated Successfully");
+        const saveFeedback = await fetch(`${apiUrl}/question/${id}/feedback`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ feedback: data.data }),
+        });
+        if (saveFeedback.ok) {
+          setRefreshKey((prev) => prev + 1);
+          setb1Loading(false);
+          toast.success("Feedback Generated Successfully");
+        }
       } else {
         console.error("Failed to generate feedback");
         toast.error("Failed to generate feedback");
@@ -136,6 +156,7 @@ export default function QuestionView({ id }: { id: string }) {
         </div>
       );
   }
+
   return (
     <div className="min-h-screen font-sans text-gray-100 ">
       <div className="max-w-7xl mx-auto p-4">
@@ -169,14 +190,22 @@ export default function QuestionView({ id }: { id: string }) {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="font-medium text-gray-300">Your Answer</h3>
-                  <div className="flex items-center gap-2 ">
+                  <div className="flex items-center gap-2">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                      onClick={listening ? stop : start}
+                      className={`text-gray-400 hover:text-gray-200 hover:bg-gray-800 ${
+                        listening ? "bg-green-600 text-white animate-pulse" : ""
+                      }`}
                     >
                       <Mic className="h-5 w-5" />
                     </Button>
+
+                    <span className="text-sm text-gray-300">
+                      {listening && "Listening..."}
+                    </span>
+
                     <Button
                       disabled={b2loading || questionData?.aiAnswer === answer}
                       className="bg-violet-600 hover:bg-violet-700 text-white font-bold"
@@ -216,8 +245,8 @@ export default function QuestionView({ id }: { id: string }) {
               </div>
             </div>
           </div>
-
           {/* Feedback Card */}
+          <FeedbackView id={id} key={refreshKey} />
           {/* <div className="rounded-lg border border-gray-800 bg-gray-900 shadow-sm p-6">
             <h2 className="text-xl font-bold text-gray-100 mb-4">Feedback</h2>
             <p className="text-gray-200">

@@ -14,6 +14,7 @@ import {
   Sparkles,
   Loader2,
   BarChart,
+  MessageCircleQuestion,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -63,6 +64,9 @@ const formSchema = z.object({
   difficultyLevel: z.enum(["easy", "medium", "hard"], {
     required_error: "Please select a difficulty level.",
   }),
+  questionTypes: z.enum(["theoretical", "practical"], {
+    required_error: "Please select a question type.",
+  }),
 });
 
 function JobForm() {
@@ -78,6 +82,7 @@ function JobForm() {
       companyDescription: "",
       requiredSkills: "",
       difficultyLevel: "easy" as "easy" | "medium" | "hard",
+      questionTypes: "theoretical" as "theoretical" | "practical",
     },
   });
 
@@ -90,6 +95,7 @@ function JobForm() {
       companyDescription,
       requiredSkills,
       difficultyLevel,
+      questionTypes,
     } = values;
 
     const requiredSkillsArray = requiredSkills.split(",");
@@ -105,6 +111,7 @@ function JobForm() {
         companyDescription,
         requiredSkills: requiredSkillsArray,
         difficultyLevel,
+        questionTypes,
       }),
     });
     const interviewResponseData = await interviewResponse.json();
@@ -116,6 +123,7 @@ function JobForm() {
       companyDescription,
       requiredSkills,
       difficultyLevel,
+      questionTypes,
     });
     const response = await fetch(`${apiUrl}/generate`, {
       method: "POST",
@@ -304,6 +312,34 @@ function JobForm() {
                       <SelectItem value="easy">Easy</SelectItem>
                       <SelectItem value="medium">Medium</SelectItem>
                       <SelectItem value="hard">Hard</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-red-400" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="questionTypes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2 text-white">
+                    <MessageCircleQuestion className="h-4 w-4" />
+                    Questions Type
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className=" text-white">
+                        <SelectValue placeholder="Select questions type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-black border-gray-700 text-white">
+                      <SelectItem value="theoretical">Theoretical</SelectItem>
+                      <SelectItem value="practical">Practical</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage className="text-red-400" />

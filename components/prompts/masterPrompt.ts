@@ -15,6 +15,7 @@ interface InterviewParams {
   companyDescription?: string;
   requiredSkills: string;
   difficultyLevel: "easy" | "medium" | "hard";
+  questionTypes: "theoretical" | "practical";
 }
 
 // Industry Context Definition
@@ -97,6 +98,6 @@ OUTPUT FORMAT:
 - Only questions should be generated no other text
 - Questions should be returned in an array format
 
-Generate 10 in-depth interview questions that go beyond surface-level knowledge.
+Generate 10 in-depth ${params.questionTypes} interview questions that go beyond surface-level knowledge.
   `;
 }

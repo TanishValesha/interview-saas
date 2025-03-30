@@ -14,21 +14,31 @@ export function createAnswerEvaluationPrompt(
   ${userAnswer}
   """
   
-  Please provide a concise point-by-point analysis of this answer with:
-  
-  STRENGTHS:
-  - [List 3-5 specific strengths of the answer]
-  - Focus on technical accuracy, relevance, structure, and communication style
-  - Highlight any particularly impressive points or strategies used
-  
-  WEAKNESSES:
-  - [List 3-5 specific areas for improvement]
-  - Identify any missing information, vague statements, or technical inaccuracies
-  - Suggest specific ways to strengthen these weak points
+  Please provide a concise point-by-point analysis of this answer with clear strengths, weaknesses, improvments and rating of the answer out of 5.
   
   FORMAT:
-  - Keep each point brief (4-5 sentences)
+  - For each strength and weakness, provide a brief and a detailed description
+  - The strength, weakness and improvemnets should be easy to understand and in simple language no fancy words
+  - Generate detailed and possible improvments for the candidate
   - Be specific and actionable in your feedback
-  - Only Return with an object with STRENGTHS array containing string and WEAKNESSES array containing string 
+  - Return ONLY a valid JavaScript object with the following structure and with no uncessary characters/content:
+  
+  {
+    strengths: [s
+      "",
+      "",
+      // Additional strengths following same format
+    ],
+    weaknesses: [
+      "The candidate should ...." ,
+      "The answer is",
+      // Additional weaknesses following same format
+    ],
+    rating: "answerRating"
+  }
+  
+  Identify possible strengths focusing on technical accuracy, relevance, structure, and communication style.
+  Identify possible weaknesses to improve answer focusing on missing information, vague statements, or technical inaccuracies.
+  Provide much more improvements/weaknesses so that the candidate can improve using those points.
   `;
 }

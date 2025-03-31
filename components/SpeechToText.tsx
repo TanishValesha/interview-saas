@@ -1,64 +1,66 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import { useState, useRef } from "react";
 
-export default function RawSpeechRecognitionTest() {
-  const recognitionRef = useRef<any>(null);
+const LiveTranscriber = () => {
   const [transcript, setTranscript] = useState("");
-  const [listening, setListening] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunks: Blob[] = [];
 
-  useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Speech Recognition not supported in this browser");
-      return;
-    }
+  const startRecording = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorderRef.current = new MediaRecorder(stream);
+    mediaRecorderRef.current.start();
 
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = "en-US";
-
-    recognition.onresult = (event: any) => {
-      let interim = "";
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        interim += event.results[i][0].transcript;
-      }
-      console.log("Transcript:", interim);
-      setTranscript(interim);
+    mediaRecorderRef.current.ondataavailable = (event) => {
+      audioChunks.push(event.data);
     };
-
-    recognition.onstart = () => {
-      console.log("Started listening");
-      setListening(true);
-    };
-
-    recognition.onend = () => {
-      console.log("Stopped listening");
-      setListening(false);
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error("Recognition error", event.error);
-    };
-
-    recognitionRef.current = recognition;
-  }, []);
-
-  const startListening = () => {
-    recognitionRef.current?.start();
   };
 
-  const stopListening = () => {
-    recognitionRef.current?.stop();
+  const stopRecording = async () => {
+    if (!mediaRecorderRef.current) return;
+
+    mediaRecorderRef.current.stop();
+    mediaRecorderRef.current.onstop = async () => {
+      const audioBlob = new Blob(audioChunks, { type: "audio/flac" });
+
+      console.log("Recorded Audio Blob:", audioBlob); // Debugging
+
+      const reader = new FileReader();
+      reader.readAsDataURL(audioBlob);
+      reader.onloadend = async () => {
+        const base64Audio = reader.result?.toString().split(",")[1];
+
+        console.log("Base64 Audio Data:", base64Audio?.substring(0, 100)); // Log first 100 chars
+
+        const response = await fetch("/api/audio", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ audioData: base64Audio }),
+        });
+
+        const data = await response.json();
+        console.log("API Response:", data); // Log the response
+
+        setTranscript(data.text || "No transcript found");
+      };
+    };
   };
 
   return (
-    <div className="bg-white">
-      <p>Listening: {listening ? "on" : "off"}</p>
-      <button onClick={startListening}>Start</button>
-      <button onClick={stopListening}>Stop</button>
-      <p>Transcript: {transcript}</p>
+    <div className="p-4 bg-white">
+      <h2 className="text-lg font-bold">Live Transcription (Groq Whisper)</h2>
+      <button
+        onClick={startRecording}
+        className="mr-2 p-2 bg-green-500 text-white"
+      >
+        Start
+      </button>
+      <button onClick={stopRecording} className="p-2 bg-red-500 text-white">
+        Stop
+      </button>
+      <p className="mt-2">{transcript || "Listening..."}</p>
     </div>
   );
-}
+};
+
+export default LiveTranscriber;

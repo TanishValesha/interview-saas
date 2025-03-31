@@ -82,7 +82,7 @@ export default function QuestionView({ id }: { id: string }) {
           prompt: createAnswerEvaluationPrompt(
             data.data?.text || "",
             data.data?.userAnswer || "",
-            "Easy" // Try to implement this dynamically
+            "Theoratical" // Try to implement this dynamically
           ),
         }),
       });
@@ -228,7 +228,7 @@ export default function QuestionView({ id }: { id: string }) {
                 <div>
                   <Button
                     variant="secondary"
-                    disabled={b1loading || questionData?.aiAnswer === answer}
+                    disabled={b1loading || questionData?.aiAnswer != null}
                     className="bg-black hover:bg-neutral-950 cursor-pointer font-bold text-white"
                     onClick={handleUserSubmit}
                   >
@@ -246,30 +246,11 @@ export default function QuestionView({ id }: { id: string }) {
             </div>
           </div>
           {/* Feedback Card */}
+          <div>
+            <h2>User Answer: </h2>
+            <p>{questionData.userAnswer}</p>
+          </div>
           <FeedbackView id={id} key={refreshKey} />
-          {/* <div className="rounded-lg border border-gray-800 bg-gray-900 shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-100 mb-4">Feedback</h2>
-            <p className="text-gray-200">
-              Great answer! No improvements needed 😊
-            </p>
-          </div> */}
-
-          {/* Guidelines Card */}
-          {/* <div className="rounded-lg border border-gray-800 bg-gray-900 shadow-sm overflow-hidden">
-            <Collapsible>
-              <CollapsibleTrigger className="flex justify-between items-center w-full p-6">
-                <h2 className="text-xl font-bold text-gray-100">
-                  Answer Guidelines
-                </h2>
-                <ChevronDown className="h-5 w-5 text-gray-400" />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="px-6 pb-6">
-                <p className="text-gray-300">
-                  Guidelines content would appear here when expanded.
-                </p>
-              </CollapsibleContent>
-            </Collapsible>
-          </div> */}
         </div>
       </div>
     </div>

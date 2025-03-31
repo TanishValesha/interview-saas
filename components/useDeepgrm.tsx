@@ -21,7 +21,7 @@ export const useDeepgram = (onTranscript: (text: string) => void) => {
     socket.onopen = () => {
       console.log("✅ WebSocket connection established");
       setListening(true);
-      recorder.start(250);
+      recorder.start(100);
 
       recorder.ondataavailable = (e) => {
         if (socket.readyState === WebSocket.OPEN) {

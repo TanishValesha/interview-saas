@@ -246,10 +246,13 @@ export default function QuestionView({ id }: { id: string }) {
             </div>
           </div>
           {/* Feedback Card */}
-          <div>
-            <h2>User Answer: </h2>
-            <p>{questionData.userAnswer}</p>
-          </div>
+          {questionData.userAnswer && (
+            <div>
+              <h2>User Answer: </h2>
+              <p>{questionData.userAnswer}</p>
+            </div>
+          )}
+
           <FeedbackView id={id} key={refreshKey} />
         </div>
       </div>

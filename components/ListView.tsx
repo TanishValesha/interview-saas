@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
 import { apiUrl } from "./libs/apiUrl";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 export default function ListView({ slug }: { slug: string }) {
+  const router = useRouter();
   const [completedQuestions, setCompletedQuestions] = useState<number[]>([1]);
   const [questions, setQuestions] = useState<{ id: number; text: string }[]>(
     []
@@ -43,7 +46,16 @@ export default function ListView({ slug }: { slug: string }) {
   return (
     <div className="min-h-screen text-gray-100 dark">
       <div className="container mx-auto py-8 px-4">
-        <h1 className="text-2xl font-bold mb-6">Interview Questions</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold mb-6">Interview Questions</h1>
+          <Button
+            onClick={() => {
+              router.push(`/mock/${questions[0].id}`);
+            }}
+          >
+            Mock Interview
+          </Button>
+        </div>
         <div className="space-y-4">
           {questions.map((question, index) => (
             <Link

@@ -18,6 +18,8 @@ model Interview {
   questionTypes      String
   createdAt          DateTime   @default(now())
   generatedQuestions Question[]
+  mockQuestions     MockModel[]
+  answerEmbeddings   AnswerEmbedding[]
 }
 
 model Question {
@@ -29,3 +31,33 @@ model Question {
   interviewId String
   interview   Interview @relation(fields: [interviewId], references: [id])
 }
+
+model MockModel {
+  id           String   @id @default(cuid())
+  text         String
+  sender       Sender
+  interviewId  String
+  interview    Interview @relation(fields: [interviewId], references: [id])
+  createdAt    DateTime @default(now())
+  answerEmbedding AnswerEmbedding?
+}
+
+enum Sender {
+  interviewer
+  candidate
+}
+
+model AnswerEmbedding {
+  id           String   @id @default(uuid())
+  answerText   String
+  embedding    Float[] 
+  mockModel     MockModel @relation(fields: [mockModelId], references: [id])
+  mockModelId   String @unique
+  interview    Interview @relation(fields: [interviewId], references: [id])
+  interviewId  String 
+  createdAt    DateTime @default(now())
+
+  @@index([interviewId])
+  @@index([mockModelId])
+}
+

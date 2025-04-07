@@ -5,55 +5,50 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronDown, Mic, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
+import { apiUrl } from "@/components/libs/apiUrl";
+import Image from "next/image";
 
-export default function InterviewPage() {
+export default function InterviewPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const [response, setResponse] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      sender: "interviewer",
-      text: "Hello! Thanks for joining us today. I'm speaking with you about our Full Stack Intern position.",
-    },
-    {
-      sender: "interviewer",
-      text: "To start, could you tell me about how you approach security when developing web applications? What are some common web vulnerabilities, and how do you prevent them?",
-    },
-    {
-      sender: "user",
-      text: "Thanks for having me! When it comes to security, I follow a 'security by design' approach. I consider security at every stage of development rather than as an afterthought.",
-    },
-    {
-      sender: "user",
-      text: "Common vulnerabilities include XSS (Cross-Site Scripting), SQL Injection, CSRF (Cross-Site Request Forgery), and broken authentication. To prevent these, I use input validation, parameterized queries, CSRF tokens, and proper authentication practices like OAuth or JWT with proper expiration.",
-    },
-    {
-      sender: "interviewer",
-      text: "That's a good overview. Could you elaborate on how you would specifically prevent XSS attacks in a React application?",
-    },
-    {
-      sender: "user",
-      text: "In React, I prevent XSS by avoiding dangerouslySetInnerHTML when possible. React automatically escapes variables in JSX, which helps prevent most XSS attacks. For cases where I need to render HTML, I use libraries like DOMPurify to sanitize content before rendering.",
-    },
-    {
-      sender: "interviewer",
-      text: "Great answer. What is the purpose of a code review, and what do you look for when reviewing someone else's code? What kind of feedback would you consider to be most helpful?",
-    },
-    {
-      sender: "user",
-      text: "Code reviews serve multiple purposes: ensuring code quality, knowledge sharing, and catching bugs early. When reviewing code, I look for:",
-    },
-    {
-      sender: "user",
-      text: "1. Functionality: Does the code work as intended?\n2. Readability: Is the code easy to understand?\n3. Maintainability: Will it be easy to modify in the future?\n4. Performance: Are there any obvious performance issues?\n5. Security: Are there potential security vulnerabilities?",
-    },
-    {
-      sender: "user",
-      text: "The most helpful feedback is specific, actionable, and educational. Rather than just pointing out issues, I try to explain why something is problematic and suggest alternatives. I also make sure to highlight positive aspects of the code to encourage good practices.",
-    },
-    {
-      sender: "interviewer",
-      text: "Those are excellent points. How do you handle disagreements during code reviews?",
-    },
-  ]);
+  const [messages, setMessages] = useState([{}] as {
+    sender: string;
+    text: string;
+  }[]);
+
+  useEffect(() => {
+    const startInterview = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/mock/start`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            slug: id,
+          }),
+        });
+
+        const data = await res.json();
+        console.log(data);
+
+        setMessages([
+          {
+            sender: "interviewer",
+            text: "Hello! Thanks for joining us today",
+          },
+          {
+            sender: "interviewer",
+            text: data.question,
+          },
+        ]);
+      } catch (error) {
+        console.error("Error starting interview:", error);
+      }
+    };
+
+    startInterview();
+  }, [id]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -65,10 +60,31 @@ export default function InterviewPage() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (response.trim()) {
-      setMessages((prev) => [...prev, { sender: "user", text: response }]);
-      setResponse("");
+      setMessages((prev) => [...prev, { sender: "candidate", text: response }]);
+      try {
+        const res = await fetch(`${apiUrl}/mock/reply`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            slug: id,
+            userAnswer: response,
+          }),
+        });
+
+        const data = await res.json();
+        console.log(data);
+
+        setMessages((prev) => [
+          ...prev,
+          { sender: "interviewer", text: data.question },
+        ]);
+      } catch (error) {
+        console.error("Error starting interview:", error);
+      }
     }
   };
 
@@ -84,13 +100,7 @@ export default function InterviewPage() {
       <main className="flex flex-1 flex-col md:flex-row overflow-hidden">
         {/* Left Panel */}
         <div className="w-full border-b border-gray-800 p-4 md:w-2/5 md:border-b-0 md:border-r">
-          <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-800">
-            <img
-              src="/placeholder.svg?height=400&width=600"
-              alt="Video feed"
-              className="h-full w-full object-cover"
-            />
-          </div>
+          <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-800"></div>
 
           <div className="mt-4 flex justify-end">
             <Button
@@ -115,7 +125,12 @@ export default function InterviewPage() {
               >
                 {message.sender === "interviewer" && (
                   <Avatar className="mr-2 h-8 w-8">
-                    <img src="/robot.png" alt="Interviewer" />
+                    <Image
+                      src="/robot.png"
+                      alt="Interviewer"
+                      width={32}
+                      height={32}
+                    />
                   </Avatar>
                 )}
 

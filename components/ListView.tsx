@@ -50,7 +50,7 @@ export default function ListView({ slug }: { slug: string }) {
           <h1 className="text-2xl font-bold mb-6">Interview Questions</h1>
           <Button
             onClick={() => {
-              router.push(`/mock/${questions[0].id}`);
+              router.push(`/mock/${slug}`);
             }}
           >
             Mock Interview

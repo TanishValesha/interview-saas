@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { apiUrl } from "@/components/libs/apiUrl";
 import Image from "next/image";
+import WebcamStream from "@/components/WebCamStream";
 
 export default function InterviewPage({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -15,6 +16,33 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
     sender: string;
     text: string;
   }[]);
+
+  async function textToSpeech(TEXT: string) {
+    console.log(TEXT);
+
+    try {
+      const response = await fetch("/api/convert-text-speech", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: TEXT }),
+      });
+
+      if (!response.ok) {
+        console.error("Error fetching audio:", await response.text());
+        return;
+      }
+
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      audio.playbackRate = 1.25;
+      audio.play();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
 
   useEffect(() => {
     const startInterview = async () => {
@@ -30,13 +58,8 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
         });
 
         const data = await res.json();
-        console.log(data);
-
+        // textToSpeech(data.question);
         setMessages([
-          {
-            sender: "interviewer",
-            text: "Hello! Thanks for joining us today",
-          },
           {
             sender: "interviewer",
             text: data.question,
@@ -63,6 +86,7 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
   const handleSendMessage = async () => {
     if (response.trim()) {
       setMessages((prev) => [...prev, { sender: "candidate", text: response }]);
+      setResponse("");
       try {
         const res = await fetch(`${apiUrl}/mock/reply`, {
           method: "POST",
@@ -76,12 +100,13 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
         });
 
         const data = await res.json();
-        console.log(data);
 
         setMessages((prev) => [
           ...prev,
           { sender: "interviewer", text: data.question },
         ]);
+
+        // textToSpeech(data.question);
       } catch (error) {
         console.error("Error starting interview:", error);
       }
@@ -100,8 +125,8 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
       <main className="flex flex-1 flex-col md:flex-row overflow-hidden">
         {/* Left Panel */}
         <div className="w-full border-b border-gray-800 p-4 md:w-2/5 md:border-b-0 md:border-r">
-          <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-800"></div>
-
+          {/* <div className=" w-full overflow-hidden rounded-lg bg-gray-800"></div> */}
+          {/* <WebcamStream /> */}
           <div className="mt-4 flex justify-end">
             <Button
               variant="destructive"
@@ -120,7 +145,9 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
               <div
                 key={index}
                 className={`flex ${
-                  message.sender === "user" ? "justify-end" : "justify-start"
+                  message.sender === "candidate"
+                    ? "justify-end"
+                    : "justify-start"
                 }`}
               >
                 {message.sender === "interviewer" && (
@@ -136,7 +163,7 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
 
                 <div
                   className={`max-w-[80%] rounded-lg p-3 ${
-                    message.sender === "user"
+                    message.sender === "candidate"
                       ? "bg-neutral-900 text-gray-100"
                       : "bg-gray-800 text-gray-100"
                   }`}

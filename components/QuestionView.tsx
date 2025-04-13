@@ -68,11 +68,8 @@ export default function QuestionView({ id }: { id: string }) {
       console.error("Failed to submit answer");
       toast.error("Failed to submit answer");
     }
-    console.log(questionData);
 
     if (data.data?.text != "" && data.data?.userAnswer) {
-      console.log("Triggered!");
-
       const response = await fetch(`${apiUrl}/generate`, {
         method: "POST",
         headers: {
@@ -88,7 +85,6 @@ export default function QuestionView({ id }: { id: string }) {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data.data);
         const saveFeedback = await fetch(`${apiUrl}/question/${id}/feedback`, {
           method: "PUT",
           headers: {

@@ -2,31 +2,16 @@
 import React, { useEffect, useState } from "react";
 import { dark } from "@clerk/themes";
 import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
-import {
-  IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
-} from "@tabler/icons-react";
-import Image from "next/image";
+import { IconUserBolt } from "@tabler/icons-react";
 import {
   SignedIn,
   SignedOut,
   SignInButton,
-  useClerk,
   UserButton,
   UserProfile,
 } from "@clerk/nextjs";
 import { Button } from "./ui/button";
-import {
-  Circle,
-  Dot,
-  Loader,
-  Notebook,
-  NotepadTextDashed,
-  Settings,
-  Text,
-} from "lucide-react";
+import { Settings, Text } from "lucide-react";
 import { apiUrl } from "./libs/apiUrl";
 import { Label } from "./ui/label";
 // import Image from "next/image";

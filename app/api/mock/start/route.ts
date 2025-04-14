@@ -42,6 +42,7 @@ export async function POST(req: Request) {
   }
 
   const { data } = await AIResponse.json();
+  console.log(interviewData);
 
   // 3. Save question in DB
   const savedQuestion = await prisma.mockModel.create({

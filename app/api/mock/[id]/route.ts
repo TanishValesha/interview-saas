@@ -3,36 +3,31 @@ import { prisma } from "../../../../components/libs/prisma";
 
 export async function GET(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: { id: string } }
 ) {
-  const { slug } = await params;
+  const { id } = await params;
   try {
-    const newInterview = await prisma.interview.findUnique({
+    const mockQuestions = await prisma.interview.findFirst({
       where: {
-        id: slug,
+        id,
       },
       select: {
         id: true,
-        jobTitle: true,
-        experienceLevel: true,
-        jobDescription: true,
-        companyDescription: true,
-        requiredSkills: true,
-        difficultyLevel: true,
-        questionTypes: true,
-        userId: true,
-        generatedQuestions: {
+        mockQuestions: {
+          orderBy: {
+            createdAt: "asc",
+          },
           select: {
-            id: true,
             text: true,
+            sender: true,
           },
         },
       },
     });
 
-    if (!newInterview) {
+    if (!mockQuestions) {
       return NextResponse.json(
-        { success: false, message: "No object found, Enter valid slug" },
+        { success: false, message: "No object found, Enter valid id" },
         { status: 404 }
       );
     }
@@ -40,7 +35,7 @@ export async function GET(
     return NextResponse.json({
       success: true,
       message: "Interview Form Fetched",
-      data: newInterview,
+      data: mockQuestions,
     });
   } catch (error) {
     console.error("Unexpected Error occured", error);

@@ -16,7 +16,9 @@ export default function ListView({ slug }: { slug: string }) {
   useEffect(() => {
     async function fetchData() {
       // Fetch questions from API
-      const response = await fetch(`${apiUrl}/interview/${slug}`);
+      const response = await fetch(`${apiUrl}/interview/${slug}`, {
+        cache: "force-cache",
+      });
       if (response.ok) {
         const data = await response.json();
         setQuestions(data.data.generatedQuestions);

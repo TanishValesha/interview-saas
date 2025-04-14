@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 import { SidebarDemo } from "@/components/Sidebar";
 import { Toaster } from "sonner";
 
@@ -26,23 +33,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased relative min-h-screen w-full h-full overflow-x-hidden bg-black flex`}
-      >
-        {/* Blue gradient spot */}
-        <Toaster richColors position="top-right" />
-        <div
-          className="absolute right-0 top-0 w-[1500px] h-[400px] rounded-full translate-x-1/4 translate-y-[-50%]"
-          style={{
-            zIndex: -1,
-            background: `radial-gradient(circle, rgba(0,149,189,0.7) 0%, rgba(0,149,189,0.2) 40%, rgba(0,0,0,0) 70%)`,
-            filter: "blur(100px)",
-          }}
-        />
-        <SidebarDemo />
-        <div className="flex-1">{children}</div>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased relative min-h-screen w-full h-full overflow-x-hidden bg-black flex`}
+        >
+          {/* Blue gradient spot */}
+          <Toaster richColors position="top-right" />
+          <div
+            className="absolute right-0 top-0 w-[1500px] h-[400px] rounded-full translate-x-1/4 translate-y-[-50%]"
+            style={{
+              zIndex: -1,
+              background: `radial-gradient(circle, rgba(0,149,189,0.7) 0%, rgba(0,149,189,0.2) 40%, rgba(0,0,0,0) 70%)`,
+              filter: "blur(100px)",
+            }}
+          />
+          <SidebarDemo />
+
+          <div className="flex-1">{children}</div>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

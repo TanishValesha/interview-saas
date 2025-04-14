@@ -45,6 +45,30 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
   }
 
   useEffect(() => {
+    const fetchInterviewData = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/mock/${id}`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch interview data");
+        }
+        const data = await res.json();
+        setMessages(
+          data.data.mockQuestions.map(
+            (mockModel: { text: string; sender: string }) => ({
+              sender: mockModel.sender,
+              text: mockModel.text,
+            })
+          )
+        );
+      } catch (error) {
+        console.error("Error fetching interview data:", error);
+      }
+    };
+
+    fetchInterviewData();
+  }, [id]);
+
+  useEffect(() => {
     const startInterview = async () => {
       try {
         const res = await fetch(`${apiUrl}/mock/start`, {
@@ -57,7 +81,7 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
           }),
         });
 
-        const data = await res.json();
+        const data: { sender: string; question: string } = await res.json();
         // textToSpeech(data.question);
         setMessages([
           {
@@ -69,9 +93,10 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
         console.error("Error starting interview:", error);
       }
     };
-
-    startInterview();
-  }, [id]);
+    if (messages.length === 0) {
+      startInterview();
+    }
+  });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 

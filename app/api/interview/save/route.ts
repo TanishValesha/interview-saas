@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
       requiredSkills,
       difficultyLevel,
       questionTypes,
+      userId,
     } = body;
 
     const newInterview = await prisma.interview.create({
@@ -23,6 +24,7 @@ export async function POST(request: NextRequest) {
         requiredSkills: requiredSkills,
         difficultyLevel: difficultyLevel,
         questionTypes: questionTypes,
+        userId: userId,
       },
     });
 

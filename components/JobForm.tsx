@@ -72,7 +72,6 @@ const formSchema = z.object({
 function JobForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -99,6 +98,14 @@ function JobForm() {
     } = values;
 
     const requiredSkillsArray = requiredSkills.split(",");
+
+    const res = await fetch(`${apiUrl}/current-user`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const user = await res.json();
     const interviewResponse = await fetch(`${apiUrl}/interview/save`, {
       method: "POST",
       headers: {
@@ -112,6 +119,7 @@ function JobForm() {
         requiredSkills: requiredSkillsArray,
         difficultyLevel,
         questionTypes,
+        userId: user.data?.id,
       }),
     });
     const interviewResponseData = await interviewResponse.json();

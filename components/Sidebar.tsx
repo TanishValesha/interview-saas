@@ -2,32 +2,44 @@
 import React, { useEffect, useState } from "react";
 import { dark } from "@clerk/themes";
 import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
+import { useRouter } from "next/navigation";
 import { IconUserBolt } from "@tabler/icons-react";
 import {
   SignedIn,
   SignedOut,
   SignInButton,
+  SignOutButton,
+  useAuth,
+  useClerk,
   UserButton,
   UserProfile,
+  useSignIn,
 } from "@clerk/nextjs";
 import { Button } from "./ui/button";
-import { Settings, Text } from "lucide-react";
+import { Loader, LogOut, Settings, Text, Plus } from "lucide-react";
 import { apiUrl } from "./libs/apiUrl";
 import { Label } from "./ui/label";
 // import Image from "next/image";
 
 export function SidebarDemo() {
+  const router = useRouter();
+  const { signOut } = useClerk();
   const [open, setOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [previousModels, setPreviousModels] = useState<
     {
       id: string;
       jobTitle: string;
     }[]
   >([]);
+  const { isSignedIn } = useAuth();
+  const { signIn } = useSignIn();
 
   useEffect(() => {
     const fetchPreviousModels = async () => {
+      setIsLoading(true);
       const res = await fetch(`${apiUrl}/current-user`, {
         method: "GET",
         headers: {
@@ -35,20 +47,29 @@ export function SidebarDemo() {
         },
       });
       const user = await res.json();
-      const response = await fetch("/api/interview", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user.data?.id,
-        }),
-      });
-      const data = await response.json();
-      if (data.success) {
-        setPreviousModels(data.data);
+
+      if (user?.data?.id) {
+        const response = await fetch("/api/interview", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.data?.id,
+          }),
+        });
+        const data = await response.json();
+        console.log(data.data);
+
+        if (data.success) {
+          setPreviousModels(data.data);
+        } else {
+          console.error("Failed to fetch previous models");
+        }
+        setIsLoading(false);
       } else {
-        console.error("Failed to fetch previous models");
+        setPreviousModels([]);
+        setIsLoading(false);
       }
     };
     fetchPreviousModels();
@@ -58,11 +79,39 @@ export function SidebarDemo() {
     <div className="flex">
       {/* Sidebar aligned to the left */}
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="flex flex-col justify-between h-full bg-neutral-950">
+        <SidebarBody className="flex flex-col justify-between h-screen bg-neutral-950">
+          {open && isSignedIn && (
+            <Button
+              className="bg-white text-black hover:bg-gray-200"
+              onClick={() => {
+                if (isSignedIn) {
+                  router.push("/interview");
+                }
+              }}
+            >
+              <span>
+                <Plus />
+              </span>
+              Create
+            </Button>
+          )}
+          {!open && isSignedIn && (
+            <Button
+              className="bg-white text-black hover:bg-gray-200"
+              onClick={() => router.push("/interview")}
+            >
+              <Plus />
+            </Button>
+          )}
+          {/* Logo */}
           <div className="flex flex-1 flex-col overflow-hidden">
-            <div className="mt-8 flex flex-col gap-2 text-white">
+            <div className="mt-4 flex flex-col gap-2 text-white">
               {open && <Label className="text-white">Previous Entries</Label>}
-              {previousModels.length === 0 ? (
+              {isLoading ? (
+                <div className="flex justify-center items-center h-screen animate-spin text-white ">
+                  <Loader className="w-7 h-7" />
+                </div>
+              ) : previousModels.length === 0 ? (
                 <div
                   className={`flex items-center justify-center h-screen text-white ${
                     !open ? "hidden" : ""
@@ -88,6 +137,7 @@ export function SidebarDemo() {
           </div>
           <div className="">
             <SignedOut>
+              {/* Logout Icon Button */}
               <SignInButton mode="modal">
                 {open ? (
                   <Button className="w-full px-4 py-2 text-white text-sm">
@@ -101,6 +151,8 @@ export function SidebarDemo() {
                 )}
               </SignInButton>
             </SignedOut>
+
+            {/* User Profile and Logout Button */}
 
             <SignedIn>
               <div className="flex items-center justify-center text-white">
@@ -118,11 +170,25 @@ export function SidebarDemo() {
                       }}
                     />
                     <Button
-                      className="ml-4 bg-transparent hover:bg-neutral-800 text-white overflow-hidden"
+                      className="ml-4 bg-transparent  hover:bg-neutral-800 text-white overflow-hidden"
                       onClick={() => setShowProfile(true)}
                     >
                       <Settings className="w-10 h-10" />
                     </Button>
+
+                    <SignOutButton>
+                      <Button
+                        variant="ghost"
+                        className="p-2 bg-transparent hover:text-white hover:bg-neutral-800"
+                        onClick={async () => {
+                          await signOut();
+                          router.push("/");
+                          window.location.reload();
+                        }}
+                      >
+                        <LogOut className="w-6 h-6 text-red-400" />
+                      </Button>
+                    </SignOutButton>
 
                     {showProfile && (
                       <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">

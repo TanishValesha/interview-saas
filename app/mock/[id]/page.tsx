@@ -8,14 +8,26 @@ import { Avatar } from "@/components/ui/avatar";
 import { apiUrl } from "@/components/libs/apiUrl";
 import Image from "next/image";
 import WebcamStream from "@/components/WebCamStream";
+import { useDeepgram } from "@/components/useDeepgrm";
 
 export default function InterviewPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const [response, setResponse] = useState("");
+  const [prevTranscript, setPrevTranscript] = useState("");
+  const [transcript, setTranscript] = useState("");
   const [messages, setMessages] = useState([{}] as {
     sender: string;
     text: string;
   }[]);
+
+  const { start, stop, listening } = useDeepgram((newTranscript) => {
+    const added = newTranscript.replace(prevTranscript, "").trim();
+    if (added) {
+      setResponse((prev) => prev + " " + added);
+      setPrevTranscript(newTranscript);
+    }
+    setTranscript(newTranscript);
+  });
 
   async function textToSpeech(TEXT: string) {
     console.log(TEXT);
@@ -82,7 +94,7 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
         });
 
         const data: { sender: string; question: string } = await res.json();
-        // textToSpeech(data.question);
+        textToSpeech(data.question);
         setMessages([
           {
             sender: "interviewer",
@@ -131,7 +143,7 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
           { sender: "interviewer", text: data.question },
         ]);
 
-        // textToSpeech(data.question);
+        textToSpeech(data.question);
       } catch (error) {
         console.error("Error starting interview:", error);
       }
@@ -151,7 +163,7 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
         {/* Left Panel */}
         <div className="w-full border-b border-gray-800 p-4 md:w-2/5 md:border-b-0 md:border-r">
           {/* <div className=" w-full overflow-hidden rounded-lg bg-gray-800"></div> */}
-          {/* <WebcamStream /> */}
+          <WebcamStream />
           <div className="mt-4 flex justify-end">
             <Button
               variant="destructive"
@@ -214,9 +226,12 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
               </div>
               <div className="flex gap-2">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
-                  className="h-10 w-10 rounded-full border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200"
+                  onClick={listening ? stop : start}
+                  className={`text-gray-400 hover:text-gray-200 hover:bg-gray-800 ${
+                    listening ? "bg-green-600 text-white animate-pulse" : ""
+                  }`}
                 >
                   <Mic className="h-5 w-5" />
                 </Button>
@@ -229,6 +244,9 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
                   <Send className="h-5 w-5" />
                 </Button>
               </div>
+              {/* <span className="text-sm text-gray-300">
+                {listening && "Listening..."}
+              </span> */}
             </div>
 
             {/* <div className="mt-4 flex items-center justify-end">

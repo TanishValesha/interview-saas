@@ -36,9 +36,8 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased relative min-h-screen w-full h-full overflow-x-hidden bg-black flex`}
+          className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased relative min-h-screen w-full h-screen overflow-hidden bg-black flex`}
         >
-          {/* Blue gradient spot */}
           <Toaster richColors position="top-right" />
           <div
             className="absolute right-0 top-0 w-[1500px] h-[400px] rounded-full translate-x-1/4 translate-y-[-50%]"
@@ -48,9 +47,14 @@ export default function RootLayout({
               filter: "blur(100px)",
             }}
           />
-          <SidebarDemo />
 
-          <div className="flex-1">{children}</div>
+          {/* Sidebar stays fixed */}
+          <div className="h-screen">
+            <SidebarDemo />
+          </div>
+
+          {/* Main content scrolls */}
+          <div className="flex-1 overflow-y-auto h-screen">{children}</div>
         </body>
       </html>
     </ClerkProvider>

@@ -5,7 +5,7 @@ export function createInterviewAnswerPrompt(question: string): string {
   
   Please generate a comprehensive answer that:
   1. Directly addresses the specific question asked
-  2. Demonstrates relevant technical knowledge and optinal practical experience
+  2. Demonstrates relevant technical knowledge and optional practical experience
   3. Shows problem-solving abilities and critical thinking skills
   4. Maintains a professional, confident tone while being conversational
   5. Avoids generic responses and includes specific details that set the candidate apart

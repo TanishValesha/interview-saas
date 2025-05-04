@@ -79,7 +79,7 @@ CONSTRAINTS:
 - Difficulty Level: ${params.difficultyLevel}
 
 SPECIALIZED INSTRUCTIONS:
-1. Questions must be:
+Questions must be:
    - Highly specific to ${params.jobTitle}
    - Technically rigorous
    - Capable of revealing true candidate capability

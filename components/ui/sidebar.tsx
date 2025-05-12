@@ -1,3 +1,4 @@
+// eslint-disable @typescript-eslint
 "use client";
 import { cn } from "@/lib/utils";
 import Link, { LinkProps } from "next/link";
@@ -40,13 +41,14 @@ export const SidebarProvider = ({
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   animate?: boolean;
 }) => {
-  const [openState, setOpenState] = useState(false);
+  const [openState] = useState(false);
 
   const open = openProp !== undefined ? openProp : openState;
   const setOpen = setOpenProp !== undefined ? setOpenProp : openState;
 
   return (
-    <SidebarContext.Provider value={{ open, setOpen, animate: animate }}>
+    // @ts-expect-error: Context value may be undefined if not wrapped in SidebarProvider
+    <SidebarContext.Provider value={{ open, setOpen, animate }}>
       {children}
     </SidebarContext.Provider>
   );

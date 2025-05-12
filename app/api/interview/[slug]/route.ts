@@ -3,6 +3,7 @@ import { prisma } from "../../../../components/libs/prisma";
 
 export async function GET(
   req: Request,
+  res: Response,
   { params }: { params: { slug: string } }
 ) {
   const { slug } = await params;

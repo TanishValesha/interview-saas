@@ -21,7 +21,7 @@ export default function QuestionView({ id }: { id: string }) {
   const [b2loading, setb2Loading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [prevTranscript, setPrevTranscript] = useState("");
-  const [transcript, setTranscript] = useState("");
+  const [, setTranscript] = useState("");
 
   const router = useRouter();
 

@@ -1,8 +1,12 @@
 import ListView from "@/components/ListView";
 import React from "react";
 
-const QuestionsListPage = ({ params }: { params: { slug: string } }) => {
-  const { slug } = params;
+const QuestionsListPage = async ({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) => {
+  const { slug } = await params;
 
   return <ListView slug={slug} />;
 };

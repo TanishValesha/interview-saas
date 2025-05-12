@@ -13,7 +13,6 @@ import {
   useClerk,
   UserButton,
   UserProfile,
-  useSignIn,
 } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import { Loader, LogOut, Settings, Text, Plus } from "lucide-react";
@@ -27,7 +26,6 @@ export function SidebarDemo() {
   const [open, setOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [previousModels, setPreviousModels] = useState<
     {
       id: string;
@@ -35,7 +33,6 @@ export function SidebarDemo() {
     }[]
   >([]);
   const { isSignedIn } = useAuth();
-  const { signIn } = useSignIn();
 
   useEffect(() => {
     const fetchPreviousModels = async () => {

@@ -3,7 +3,9 @@ import { prisma } from "../../../../components/libs/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  res: Response
 ) {
   try {
     const question = await prisma.question.findUnique({
@@ -35,6 +37,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
+  res: Response,
   { params }: { params: { id: string } }
 ) {
   const { id } = params;

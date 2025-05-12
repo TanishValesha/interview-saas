@@ -1,8 +1,8 @@
 "use client";
 
 import type React from "react";
-import { useState, useRef, useEffect } from "react";
-import { ChevronDown, Mic, Send } from "lucide-react";
+import { useState, useRef, useEffect, use } from "react";
+import { Mic, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { apiUrl } from "@/components/libs/apiUrl";
@@ -10,11 +10,15 @@ import Image from "next/image";
 import WebcamStream from "@/components/WebCamStream";
 import { useDeepgram } from "@/components/useDeepgrm";
 
-export default function InterviewPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function InterviewPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const [response, setResponse] = useState("");
   const [prevTranscript, setPrevTranscript] = useState("");
-  const [transcript, setTranscript] = useState("");
+  const [, setTranscript] = useState("");
   const [messages, setMessages] = useState([{}] as {
     sender: string;
     text: string;

@@ -18,8 +18,8 @@ type FeedbackData = {
 
 export default function FeedbackView({ id }: { id: string }) {
   const [data, setData] = useState<FeedbackData | null>(null);
-  const [error, setError] = useState(false);
-  const [isFeedback, setIsFeedback] = useState(true);
+  const [, setError] = useState(false);
+  const [, setIsFeedback] = useState(true);
 
   useEffect(() => {
     async function fetchData() {

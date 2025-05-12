@@ -1,14 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import DeviceTest from "../../../components/DeviceTest";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export default function SetupPagepp({ params }: { params: { id: string } }) {
+export default function SetupPagepp({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const [testCompleted, setTestCompleted] = useState(false);
   const router = useRouter();
-  const { id } = params;
+  const { id } = use(params);
   const handleDeviceTestComplete = () => {
     setTestCompleted(true);
   };
@@ -23,8 +27,8 @@ export default function SetupPagepp({ params }: { params: { id: string } }) {
             Ready for Your Interview
           </h1>
           <p className="text-gray-600 mb-6">
-            Your camera and microphone are set up and working properly. You're
-            all set to begin your interview!
+            Your camera and microphone are set up and working properly.
+            You&apos;re all set to begin your interview!
           </p>
           <Button
             className="bg-white text-black hover:bg-gray-200"

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
   request: NextRequest,
+  res: Response,
   { params }: { params: { id: string } }
 ) {
   const { id } = params;
@@ -29,6 +30,7 @@ export async function PUT(
 
 export async function GET(
   request: NextRequest,
+  res: Response,
   { params }: { params: { id: string } }
 ) {
   try {

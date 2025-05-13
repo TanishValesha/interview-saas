@@ -3,8 +3,9 @@ import { prisma } from "../../../../components/libs/prisma";
 
 export async function GET(
   req: Request,
-  res: Response,
-  { params }: { params: { slug: string } }
+  { params }: { params: { slug: string } },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  res: Response
 ) {
   const { slug } = await params;
   try {

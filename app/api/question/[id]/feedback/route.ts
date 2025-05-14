@@ -6,7 +6,7 @@ export async function PUT(
   res: Response,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params;
+  const { id } = await params;
   const { feedback } = await request.json();
 
   if (!feedback) {

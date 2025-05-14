@@ -7,10 +7,11 @@ export async function GET(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   res: Response
 ) {
+  const { id } = await params;
   try {
     const question = await prisma.question.findUnique({
       where: {
-        id: params.id,
+        id: id,
       },
     });
 

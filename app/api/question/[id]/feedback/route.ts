@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
   request: NextRequest,
-  res: Response,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  res: Response
 ) {
   const { id } = await params;
   const { feedback } = await request.json();
@@ -30,8 +31,9 @@ export async function PUT(
 
 export async function GET(
   request: NextRequest,
-  res: Response,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  res: Response
 ) {
   try {
     const feedback = await prisma.question.findUnique({

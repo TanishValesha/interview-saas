@@ -38,8 +38,9 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  res: Response,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  res: Response
 ) {
   const { id } = params;
 

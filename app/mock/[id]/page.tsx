@@ -5,7 +5,6 @@ import { useState, useRef, useEffect, use } from "react";
 import { Mic, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
-import { apiUrl } from "@/components/libs/apiUrl";
 import Image from "next/image";
 import WebcamStream from "@/components/WebCamStream";
 import { useDeepgram } from "@/components/useDeepgrm";
@@ -63,7 +62,9 @@ export default function InterviewPage({
   useEffect(() => {
     const fetchInterviewData = async () => {
       try {
-        const res = await fetch(`${apiUrl}/mock/${id}`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/mock/${id}`
+        );
         if (!res.ok) {
           throw new Error("Failed to fetch interview data");
         }
@@ -87,15 +88,18 @@ export default function InterviewPage({
   useEffect(() => {
     const startInterview = async () => {
       try {
-        const res = await fetch(`${apiUrl}/mock/start`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            slug: id,
-          }),
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/mock/start`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              slug: id,
+            }),
+          }
+        );
 
         const data: { sender: string; question: string } = await res.json();
         textToSpeech(data.question);
@@ -129,16 +133,19 @@ export default function InterviewPage({
       setMessages((prev) => [...prev, { sender: "candidate", text: response }]);
       setResponse("");
       try {
-        const res = await fetch(`${apiUrl}/mock/reply`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            slug: id,
-            userAnswer: response,
-          }),
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/mock/reply`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              slug: id,
+              userAnswer: response,
+            }),
+          }
+        );
 
         const data = await res.json();
 

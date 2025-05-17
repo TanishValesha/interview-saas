@@ -7,7 +7,6 @@ import { ArrowLeft, Loader, Mic } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {} from "@/components/ui/collapsible";
 import { Question } from "@/types/Question";
-import { apiUrl } from "./libs/apiUrl";
 import { toast } from "sonner";
 import { createInterviewAnswerPrompt } from "./prompts/questionAnswerPrompt";
 import { createAnswerEvaluationPrompt } from "./prompts/answerEvluationPrompt";
@@ -37,7 +36,9 @@ export default function QuestionView({ id }: { id: string }) {
   useEffect(() => {
     async function fetchData() {
       // Fetch question from API
-      const response = await fetch(`${apiUrl}/question/${id}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/question/${id}`
+      );
       if (response.ok) {
         const data = await response.json();
         setQuestionData(data.data);
@@ -52,13 +53,16 @@ export default function QuestionView({ id }: { id: string }) {
 
   const handleUserSubmit = async () => {
     setb1Loading(true);
-    const response = await fetch(`${apiUrl}/question/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userAnswer: answer }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/question/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userAnswer: answer }),
+      }
+    );
     let data;
     if (response.ok) {
       data = await response.json();
@@ -70,28 +74,34 @@ export default function QuestionView({ id }: { id: string }) {
     }
 
     if (data.data?.text != "" && data.data?.userAnswer) {
-      const response = await fetch(`${apiUrl}/generate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prompt: createAnswerEvaluationPrompt(
-            data.data?.text || "",
-            data.data?.userAnswer || "",
-            "Theoratical" // Try to implement this dynamically
-          ),
-        }),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const saveFeedback = await fetch(`${apiUrl}/question/${id}/feedback`, {
-          method: "PUT",
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/generate`,
+        {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ feedback: data.data }),
-        });
+          body: JSON.stringify({
+            prompt: createAnswerEvaluationPrompt(
+              data.data?.text || "",
+              data.data?.userAnswer || "",
+              "Theoratical" // Try to implement this dynamically
+            ),
+          }),
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        const saveFeedback = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/question/${id}/feedback`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ feedback: data.data }),
+          }
+        );
         if (saveFeedback.ok) {
           setRefreshKey((prev) => prev + 1);
           setb1Loading(false);
@@ -107,15 +117,18 @@ export default function QuestionView({ id }: { id: string }) {
 
   const handleGenerateAnswer = async () => {
     setb2Loading(true);
-    const response = await fetch(`${apiUrl}/generate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt: createInterviewAnswerPrompt(questionData?.text || ""),
-      }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/generate`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: createInterviewAnswerPrompt(questionData?.text || ""),
+        }),
+      }
+    );
     let data;
     if (response.ok) {
       data = await response.json();
@@ -125,13 +138,16 @@ export default function QuestionView({ id }: { id: string }) {
       console.error("Failed to generate answer");
       toast.error("Failed to generate answer");
     }
-    const responseSave = await fetch(`${apiUrl}/question/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ aiAnswer: data.data }),
-    });
+    const responseSave = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/question/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ aiAnswer: data.data }),
+      }
+    );
 
     if (responseSave.ok) {
       const data = await responseSave.json();

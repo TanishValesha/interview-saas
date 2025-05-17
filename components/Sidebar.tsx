@@ -16,7 +16,6 @@ import {
 } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import { Loader, LogOut, Settings, Text, Plus } from "lucide-react";
-import { apiUrl } from "./libs/apiUrl";
 import { Label } from "./ui/label";
 // import Image from "next/image";
 
@@ -37,12 +36,15 @@ export function SidebarDemo() {
   useEffect(() => {
     const fetchPreviousModels = async () => {
       setIsLoading(true);
-      const res = await fetch(`${apiUrl}/current-user`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/current-user`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const user = await res.json();
 
       if (user?.data?.id) {

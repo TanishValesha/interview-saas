@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/components/libs/prisma";
 // import { startMock } from "@/components/prompts/mockStartPrompt";
 import { getInterviewDetails } from "@/components/libs/getInterviewFunction";
-import { apiUrl } from "@/components/libs/apiUrl";
 import { generateCohereEmbedding } from "@/components/libs/generateCohereEmbedding";
 import { searchInPinecone } from "@/components/libs/searchInPinecone";
 
@@ -195,15 +194,18 @@ ${userAnswer}
 
   console.log("Prompt for AI:", prompt);
 
-  const AIResponse = await fetch(`${apiUrl}/generate`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      prompt: prompt,
-    }),
-  });
+  const AIResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/generate`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: prompt,
+      }),
+    }
+  );
 
   if (!AIResponse.ok) {
     const errorText = await AIResponse.text();

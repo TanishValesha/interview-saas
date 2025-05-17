@@ -45,7 +45,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import createMasterPrompt from "./prompts/masterPrompt";
-import { apiUrl } from "./libs/apiUrl";
 
 const formSchema = z.object({
   jobTitle: z.string().min(2, {
@@ -99,29 +98,32 @@ function JobForm() {
 
     const requiredSkillsArray = requiredSkills.split(",");
 
-    const res = await fetch(`${apiUrl}/current-user`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/current-user`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
     const user = await res.json();
-    const interviewResponse = await fetch(`${apiUrl}/interview/save`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jobTitle,
-        experienceLevel,
-        jobDescription,
-        companyDescription,
-        requiredSkills: requiredSkillsArray,
-        difficultyLevel,
-        questionTypes,
-        userId: user.data?.id,
-      }),
-    });
+    const interviewResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/interview/save`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          jobTitle,
+          experienceLevel,
+          jobDescription,
+          companyDescription,
+          requiredSkills: requiredSkillsArray,
+          difficultyLevel,
+          questionTypes,
+          userId: user.data?.id,
+        }),
+      }
+    );
     const interviewResponseData = await interviewResponse.json();
 
     const prompt = createMasterPrompt({
@@ -133,27 +135,33 @@ function JobForm() {
       difficultyLevel,
       questionTypes,
     });
-    const response = await fetch(`${apiUrl}/generate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ prompt }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/generate`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      }
+    );
 
     const questions = await response.json();
     const questionsArray = JSON.parse(questions.data);
 
-    const saveQuestions = await fetch(`${apiUrl}/generate/save`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        interviewId: interviewResponseData.data.id,
-        questions: questionsArray,
-      }),
-    });
+    const saveQuestions = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/generate/save`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          interviewId: interviewResponseData.data.id,
+          questions: questionsArray,
+        }),
+      }
+    );
 
     if (saveQuestions.status === 200 && interviewResponse.status === 200) {
       setIsSubmitting(false);

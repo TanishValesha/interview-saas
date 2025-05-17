@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
-import { apiUrl } from "./libs/apiUrl";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
@@ -16,9 +15,12 @@ export default function ListView({ slug }: { slug: string }) {
   useEffect(() => {
     async function fetchData() {
       // Fetch questions from API
-      const response = await fetch(`${apiUrl}/interview/${slug}`, {
-        cache: "force-cache",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/interview/${slug}`,
+        {
+          cache: "force-cache",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setQuestions(data.data.generatedQuestions);

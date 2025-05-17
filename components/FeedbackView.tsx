@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CheckCircle2, XCircle } from "lucide-react";
-import { apiUrl } from "./libs/apiUrl";
 
 type FeedbackData = {
   strengths: string[];
@@ -24,7 +23,9 @@ export default function FeedbackView({ id }: { id: string }) {
   useEffect(() => {
     async function fetchData() {
       // Fetch question from API
-      const response = await fetch(`${apiUrl}/question/${id}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/question/${id}`
+      );
       if (response.ok) {
         const data = await response.json();
         if (data.data.aiAnswer == data.data.userAnswer) setIsFeedback(true);

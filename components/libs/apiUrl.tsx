@@ -1,1 +1,1 @@
-export const apiUrl = "https://interview-saas.vercel.app/api";
+export const apiUrl = "http://localhost:3000/api";

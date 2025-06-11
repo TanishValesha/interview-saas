@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, use } from "react";
-import DeviceTest from "../../../components/DeviceTest";
+import DeviceTest from "../../../../components/DeviceTest";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -33,7 +33,7 @@ export default function SetupPagepp({
           <Button
             className="bg-white text-black hover:bg-gray-200"
             onClick={() => {
-              router.push(`/mock/${id}`);
+              router.push(`/dashboard/mock/${id}`);
             }}
           >
             Start Interview

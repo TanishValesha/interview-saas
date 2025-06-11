@@ -54,7 +54,7 @@ export default function ListView({ slug }: { slug: string }) {
           <h1 className="text-2xl font-bold mb-6">Interview Questions</h1>
           <Button
             onClick={() => {
-              router.push(`/setup/${slug}`);
+              router.push(`/dashboard/setup/${slug}`);
             }}
           >
             Mock Interview
@@ -63,7 +63,7 @@ export default function ListView({ slug }: { slug: string }) {
         <div className="space-y-4">
           {questions.map((question, index) => (
             <Link
-              href={`/question/${question.id}`}
+              href={`/dashboard/question/${question.id}`}
               key={question.id}
               className="flex items-start gap-4 p-6 bg-neutral-900 rounded-lg hover:bg-neutral-950 hover:scale-101 duration-200 cursor-pointer"
               onClick={() => toggleCompleted(question.id)}

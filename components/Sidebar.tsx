@@ -15,9 +15,19 @@ import {
   UserProfile,
 } from "@clerk/nextjs";
 import { Button } from "./ui/button";
-import { Loader, LogOut, Settings, Text, Plus } from "lucide-react";
+import {
+  Loader,
+  LogOut,
+  Settings,
+  Text,
+  Plus,
+  Home,
+  Link,
+  HomeIcon,
+  House,
+} from "lucide-react";
 import { Label } from "./ui/label";
-// import Image from "next/image";
+import Image from "next/image";
 
 export function SidebarDemo() {
   const router = useRouter();
@@ -80,29 +90,42 @@ export function SidebarDemo() {
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="flex flex-col justify-between h-screen bg-neutral-950">
           {open && isSignedIn && (
-            <Button
-              className="bg-white text-black hover:bg-gray-200"
-              onClick={() => {
-                if (isSignedIn) {
-                  router.push("/interview");
-                }
-              }}
-            >
-              <span>
-                <Plus />
-              </span>
-              Create
-            </Button>
+            <div className="flex justify-baseline items-center gap-2">
+              <Button
+                className="bg-transparent w-10 h-10"
+                onClick={() => {
+                  router.push("/dashboard");
+                }}
+              >
+                <House className="w-10 h-10" />
+              </Button>
+
+              <Button
+                className="bg-white text-black hover:bg-gray-200 flex-4"
+                onClick={() => {
+                  if (isSignedIn) {
+                    router.push("/dashboard/interview");
+                  }
+                }}
+              >
+                <span>
+                  <Plus />
+                </span>
+                Create
+              </Button>
+            </div>
           )}
+
           {!open && isSignedIn && (
-            <Button
-              className="bg-white text-black hover:bg-gray-200"
-              onClick={() => router.push("/interview")}
-            >
-              <Plus />
-            </Button>
+            <>
+              <Button
+                className="bg-white text-black hover:bg-gray-200"
+                onClick={() => router.push("/dashboard/interview")}
+              >
+                <Plus />
+              </Button>
+            </>
           )}
-          {/* Logo */}
           <div className="flex flex-1 flex-col overflow-hidden">
             <div className="mt-4 flex flex-col gap-2 text-white">
               {open && <Label className="text-white">Previous Entries</Label>}
@@ -124,7 +147,7 @@ export function SidebarDemo() {
                     key={idx}
                     link={{
                       label: model.jobTitle,
-                      href: `/interview/${model.id}`,
+                      href: `/dashboard/interview/${model.id}`,
                       icon: (
                         <Text className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
                       ),

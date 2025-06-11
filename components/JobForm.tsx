@@ -167,7 +167,7 @@ function JobForm() {
       setIsSubmitting(false);
       toast.success("Interview questions generated successfully.");
 
-      router.push(`/interview/${interviewResponseData.data.id}`);
+      router.push(`/dashboard/interview/${interviewResponseData.data.id}`);
     } else {
       toast.error("Failed to generate interview questions.");
     }

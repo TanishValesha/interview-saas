@@ -28,7 +28,7 @@ export default function InterviewPage({
   const [prevTranscript, setPrevTranscript] = useState("");
   const [, setTranscript] = useState("");
   const [playbackRate, setPlaybackRate] = useState(1.25);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [messages, setMessages] = useState([{}] as {
     sender: string;
     text: string;

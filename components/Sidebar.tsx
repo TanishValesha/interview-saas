@@ -15,19 +15,8 @@ import {
   UserProfile,
 } from "@clerk/nextjs";
 import { Button } from "./ui/button";
-import {
-  Loader,
-  LogOut,
-  Settings,
-  Text,
-  Plus,
-  Home,
-  Link,
-  HomeIcon,
-  House,
-} from "lucide-react";
+import { Loader, LogOut, Settings, Text, Plus, House } from "lucide-react";
 import { Label } from "./ui/label";
-import Image from "next/image";
 
 export function SidebarDemo() {
   const router = useRouter();
@@ -88,7 +77,7 @@ export function SidebarDemo() {
     <div className="flex">
       {/* Sidebar aligned to the left */}
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="flex flex-col justify-between h-screen bg-neutral-950">
+        <SidebarBody className="flex flex-col justify-between h-screen bg-neutral-950 ">
           {open && isSignedIn && (
             <div className="flex justify-baseline items-center gap-2">
               <Button
@@ -145,12 +134,11 @@ export function SidebarDemo() {
                 previousModels.map((model, idx) => (
                   <SidebarLink
                     key={idx}
+                    className="text-white"
                     link={{
                       label: model.jobTitle,
                       href: `/dashboard/interview/${model.id}`,
-                      icon: (
-                        <Text className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-                      ),
+                      icon: <Text className="h-5 w-5 shrink-0 text-white" />,
                     }}
                   />
                 ))

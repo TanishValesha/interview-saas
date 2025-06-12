@@ -22,10 +22,7 @@ export default function SpotlightNewDemo() {
         <Spotlight />
         <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-32 md:pt-0">
           <div className="flex flex-col items-center">
-            <TextGenerateEffect
-              words={words}
-              className="bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50"
-            />
+            <TextGenerateEffect words={words} />
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

@@ -30,29 +30,27 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased relative min-h-screen w-full h-screen overflow-hidden bg-black flex`}
-        >
-          <Toaster richColors position="top-right" />
-          <div
-            className="absolute right-0 top-0 w-[1500px] h-[400px] rounded-full translate-x-1/4 translate-y-[-50%]"
-            style={{
-              zIndex: -1,
-              background: `radial-gradient(circle, rgba(0,149,189,0.7) 0%, rgba(0,149,189,0.2) 40%, rgba(0,0,0,0) 70%)`,
-              filter: "blur(100px)",
-            }}
-          />
+      <div
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased relative min-h-screen w-full h-screen overflow-hidden bg-black flex`}
+      >
+        <Toaster richColors position="top-right" />
+        <div
+          className="absolute right-0 top-0 w-[1500px] h-[400px] rounded-full translate-x-1/4 translate-y-[-50%]"
+          style={{
+            zIndex: -1,
+            background: `radial-gradient(circle, rgba(0,149,189,0.7) 0%, rgba(0,149,189,0.2) 40%, rgba(0,0,0,0) 70%)`,
+            filter: "blur(100px)",
+          }}
+        />
 
-          {/* Sidebar stays fixed */}
-          <div className="h-screen">
-            <SidebarDemo />
-          </div>
+        {/* Sidebar stays fixed */}
+        <div className="h-screen">
+          <SidebarDemo />
+        </div>
 
-          {/* Main content scrolls */}
-          <div className="flex-1 overflow-y-auto h-screen">{children}</div>
-        </body>
-      </html>
+        {/* Main content scrolls */}
+        <div className="flex-1 overflow-y-auto h-screen">{children}</div>
+      </div>
     </ClerkProvider>
   );
 }

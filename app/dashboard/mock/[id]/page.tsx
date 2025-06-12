@@ -8,6 +8,15 @@ import { Avatar } from "@/components/ui/avatar";
 import Image from "next/image";
 import WebcamStream from "@/components/WebCamStream";
 import { useDeepgram } from "@/components/useDeepgrm";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
 
 export default function InterviewPage({
   params,
@@ -18,6 +27,8 @@ export default function InterviewPage({
   const [response, setResponse] = useState("");
   const [prevTranscript, setPrevTranscript] = useState("");
   const [, setTranscript] = useState("");
+  const [playbackRate, setPlaybackRate] = useState(1.25);
+  const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([{}] as {
     sender: string;
     text: string;
@@ -52,7 +63,7 @@ export default function InterviewPage({
       const blob = await response.blob();
       const audioUrl = URL.createObjectURL(blob);
       const audio = new Audio(audioUrl);
-      audio.playbackRate = 1.25;
+      audio.playbackRate = playbackRate;
       audio.play();
     } catch (error) {
       console.error("Error:", error);
@@ -133,6 +144,8 @@ export default function InterviewPage({
       setMessages((prev) => [...prev, { sender: "candidate", text: response }]);
       setResponse("");
       try {
+        toast.loading("Thinking...");
+        setLoading(true);
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/mock/reply`,
           {
@@ -148,7 +161,7 @@ export default function InterviewPage({
         );
 
         const data = await res.json();
-
+        toast.dismiss();
         setMessages((prev) => [
           ...prev,
           { sender: "interviewer", text: data.question },
@@ -168,6 +181,37 @@ export default function InterviewPage({
     }
   };
 
+  const questionsArray = messages.filter((msg) => msg.sender === "interviewer");
+  console.log(questionsArray.length);
+
+  const handleEndInterview = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/mock/end/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            slug: id,
+          }),
+        }
+      );
+
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Interview ended successfully!");
+        console.log(data.data);
+      } else {
+        toast.error(data.message || "Failed to end the interview.");
+      }
+    } catch (error) {
+      console.error("Error ending interview:", error);
+      toast.error("An error occurred while ending the interview.");
+    }
+  };
+
   return (
     <div className="flex h-screen flex-col text-gray-100 overflow-hidden pl-32">
       <main className="flex flex-1 flex-col md:flex-row overflow-hidden">
@@ -175,8 +219,12 @@ export default function InterviewPage({
         <div className="w-full border-b border-gray-800 p-4 md:w-2/5 md:border-b-0 md:border-r">
           {/* <div className=" w-full overflow-hidden rounded-lg bg-gray-800"></div> */}
           <WebcamStream />
-          <div className="mt-4 flex justify-end">
+          <div className="mt-4 flex justify-end gap-3">
+            <Label className="text-md bg-gray-800 px-3 rounded-4xl">
+              Questions Left: {15 - questionsArray.length}
+            </Label>
             <Button
+              onClick={handleEndInterview}
               variant="destructive"
               className="bg-red-600 hover:bg-red-700"
             >
@@ -235,25 +283,48 @@ export default function InterviewPage({
                   className="min-h-[80px] w-full resize-none rounded-lg bg-gray-800 border border-gray-400 p-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-700"
                 />
               </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={listening ? stop : start}
-                  className={`text-gray-400 hover:text-gray-200 hover:bg-gray-800 ${
-                    listening ? "bg-green-600 text-white animate-pulse" : ""
-                  }`}
-                >
-                  <Mic className="h-5 w-5" />
-                </Button>
-                <Button
-                  variant="default"
-                  size="icon"
-                  className="h-10 w-10 rounded-full bg-gray-700 hover:bg-gray-600"
-                  onClick={handleSendMessage}
-                >
-                  <Send className="h-5 w-5" />
-                </Button>
+              <div className="flex-col items-center justify-center gap-2">
+                <div className="mb-2">
+                  <Select
+                    onValueChange={(value) => {
+                      setPlaybackRate(parseFloat(value));
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={playbackRate} />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 text-gray-100">
+                      <SelectItem value="0.5">x0.5</SelectItem>
+                      <SelectItem value="0.75">x0.75</SelectItem>
+                      <SelectItem value="1.0">x1.0</SelectItem>
+                      <SelectItem value="1.25">x1.25</SelectItem>
+                      <SelectItem value="1.5">x1.5</SelectItem>
+                      <SelectItem value="1.75">x1.75</SelectItem>
+                      <SelectItem value="2.0">x2.0</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={listening ? stop : start}
+                    className={`text-gray-400 hover:text-gray-200 hover:bg-gray-800 ${
+                      listening ? "bg-green-600 text-white animate-pulse" : ""
+                    }`}
+                  >
+                    <Mic className="h-5 w-5" />
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="icon"
+                    className="h-10 w-10 rounded-full bg-gray-700 hover:bg-gray-600 disabled:cursor-not-allowed"
+                    disabled={questionsArray.length >= 15}
+                    onClick={handleSendMessage}
+                  >
+                    <Send className="h-5 w-5" />
+                  </Button>
+                </div>
               </div>
               {/* <span className="text-sm text-gray-300">
                 {listening && "Listening..."}

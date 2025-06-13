@@ -130,7 +130,7 @@ const InterviewFeedbackDashboard = ({
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/feedback/${id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/feedback/${id}`
       );
       if (response.ok) {
         const data = await response.json();

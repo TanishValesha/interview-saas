@@ -9,6 +9,7 @@ import {
   User,
   Star,
   Target,
+  Loader,
 } from "lucide-react";
 import { FeedbackData } from "@/types/MockFeedback";
 
@@ -17,6 +18,7 @@ const InterviewFeedbackDashboard = ({
 }: {
   params: Promise<{ id: string }>;
 }) => {
+  const [loading, setLoading] = useState(false);
   const [feedbackData, setFeedbackData] = useState<FeedbackData>({
     overallScore: 0,
     recommendation: "MAYBE",
@@ -129,6 +131,7 @@ const InterviewFeedbackDashboard = ({
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/feedback/${id}`
       );
@@ -140,7 +143,7 @@ const InterviewFeedbackDashboard = ({
         }
         const newData = typeof raw === "string" ? JSON.parse(raw) : raw;
         setFeedbackData(newData);
-        console.log("Feedback Data:", newData);
+        setLoading(false);
       }
     };
     fetchData();
@@ -204,6 +207,14 @@ const InterviewFeedbackDashboard = ({
     </button>
   );
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center animate-spin text-white ">
+        <Loader className="w-7 h-7" />
+      </div>
+    );
+  }
+
   return (
     <>
       {feedbackData.overallScore > 0 && (
@@ -218,6 +229,7 @@ const InterviewFeedbackDashboard = ({
                 <div
                   className={`px-4 py-2 rounded-full text-white font-semibold ${getRecommendationColor(feedbackData.recommendation)} z-30`}
                 >
+                  HIRING STATUS:{" "}
                   {feedbackData.recommendation?.replace("_", " ")}
                 </div>
               </div>

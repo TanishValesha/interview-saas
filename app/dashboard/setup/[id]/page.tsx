@@ -22,7 +22,7 @@ export default function SetupPagepp({
       {!testCompleted ? (
         <DeviceTest onComplete={handleDeviceTestComplete} />
       ) : (
-        <div className="bg-transparent border rounded-lg shadow-lg p-8 max-w-lg w-full text-center">
+        <div className="bg-transparent border-transparent rounded-lg shadow-lg p-8 max-w-lg w-full text-center">
           <h1 className="text-2xl font-bold text-white mb-4">
             Ready for Your Interview
           </h1>

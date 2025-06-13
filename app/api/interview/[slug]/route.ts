@@ -22,6 +22,7 @@ export async function GET(
         requiredSkills: true,
         difficultyLevel: true,
         questionTypes: true,
+        feedback: true,
         userId: true,
         generatedQuestions: {
           select: {

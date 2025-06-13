@@ -137,6 +137,7 @@ OUTPUT FORMAT:
 }
 
 Generate detailed, specific feedback that helps the candidate understand exactly where they stand and how to improve for future interviews.
+Important: Generate only the JSON output as specified above, without any additional text or commentary.
   `;
 }
 

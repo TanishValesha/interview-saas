@@ -8,6 +8,7 @@ export type Interview = {
   companyDescription: string;
   requiredSkills: string[];
   difficultyLevel: string;
+  feedback: JSON | null;
   generatedQuestions: Question[];
   createdAt: Date;
 };

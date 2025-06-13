@@ -17,6 +17,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Interview } from "@/types/Interview";
+import Link from "next/link";
 
 export default function InterviewPage({
   params,
@@ -24,6 +27,7 @@ export default function InterviewPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const [interview, setInterview] = useState<Interview>();
   const [response, setResponse] = useState("");
   const [prevTranscript, setPrevTranscript] = useState("");
   const [, setTranscript] = useState("");
@@ -33,6 +37,7 @@ export default function InterviewPage({
     sender: string;
     text: string;
   }[]);
+  const router = useRouter();
 
   const { start, stop, listening } = useDeepgram((newTranscript) => {
     const added = newTranscript.replace(prevTranscript, "").trim();
@@ -69,6 +74,17 @@ export default function InterviewPage({
       console.error("Error:", error);
     }
   }
+
+  useEffect(() => {
+    const fetchInterviewData = async () => {
+      const response = await fetch(`/api/interview/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setInterview(data.data);
+      }
+    };
+    fetchInterviewData();
+  }, [id]);
 
   useEffect(() => {
     const fetchInterviewData = async () => {
@@ -201,8 +217,8 @@ export default function InterviewPage({
 
       const data = await res.json();
       if (data.success) {
-        toast.success("Interview ended successfully!");
-        console.log(data.data);
+        toast.success("Interview Ended Successfully!");
+        router.push(`/dashboard/feedback/${id}`);
       } else {
         toast.error(data.message || "Failed to end the interview.");
       }
@@ -219,22 +235,36 @@ export default function InterviewPage({
         <div className="w-full border-b border-gray-800 p-4 md:w-2/5 md:border-b-0 md:border-r">
           {/* <div className=" w-full overflow-hidden rounded-lg bg-gray-800"></div> */}
           <WebcamStream />
-          <div className="mt-4 flex justify-end gap-3">
+          <div className="mt-4 flex justify-start gap-3">
             <Label className="text-md bg-gray-800 px-3 rounded-4xl">
               Questions Left: {15 - questionsArray.length}
             </Label>
             <Button
               onClick={handleEndInterview}
               variant="destructive"
+              disabled={interview?.feedback !== null}
               className="bg-red-600 hover:bg-red-700"
             >
               End Interview
             </Button>
+            {interview?.feedback && (
+              <Button className="bg-white text-black hover:bg-gray-300">
+                <Link href={`/dashboard/feedback/${interview.id}`}>
+                  View Feedback
+                </Link>
+              </Button>
+            )}
+          </div>
+          <div className="mt-2 text-sm text-gray-400 text-left">
+            <p className="mb-1 text-md">
+              Note: Interview can only be ended once or will automatically end
+              when questions reach 0
+            </p>
           </div>
         </div>
 
         {/* Right Chat Panel */}
-        <div className="flex flex-1/3 flex-col relative h-full overflow-hidden">
+        <div className="flex flex-1/3 flex-col relative h-full overflow-hidden z-30">
           {/* Scrollable Chat Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-[8rem]">
             {messages.map((message, index) => (
@@ -278,9 +308,10 @@ export default function InterviewPage({
                 <textarea
                   placeholder="Type your response..."
                   value={response}
+                  disabled={interview?.feedback !== null}
                   onChange={(e) => setResponse(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="min-h-[80px] w-full resize-none rounded-lg bg-gray-800 border border-gray-400 p-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-700"
+                  className="min-h-[80px] w-full resize-none rounded-lg disabled:cursor-not-allowed bg-gray-800 border border-gray-400 p-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-700"
                 />
               </div>
               <div className="flex-col items-center justify-center gap-2">
@@ -308,8 +339,12 @@ export default function InterviewPage({
                   <Button
                     variant="ghost"
                     size="icon"
+                    disabled={
+                      questionsArray.length >= 15 ||
+                      interview?.feedback !== null
+                    }
                     onClick={listening ? stop : start}
-                    className={`text-gray-400 hover:text-gray-200 hover:bg-gray-800 ${
+                    className={`text-gray-400 hover:text-gray-200 disabled:cursor-not-allowed hover:bg-gray-800 ${
                       listening ? "bg-green-600 text-white animate-pulse" : ""
                     }`}
                   >
@@ -319,7 +354,10 @@ export default function InterviewPage({
                     variant="default"
                     size="icon"
                     className="h-10 w-10 rounded-full bg-gray-700 hover:bg-gray-600 disabled:cursor-not-allowed"
-                    disabled={questionsArray.length >= 15}
+                    disabled={
+                      questionsArray.length >= 15 ||
+                      interview?.feedback !== null
+                    }
                     onClick={handleSendMessage}
                   >
                     <Send className="h-5 w-5" />

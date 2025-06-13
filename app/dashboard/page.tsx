@@ -53,11 +53,14 @@ export default function BackgroundBeamsDemo() {
               onSubmit={form.handleSubmit(async (data) => {
                 setLoading(true);
                 try {
-                  const res = await fetch("/api/subscribe", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data),
-                  });
+                  const res = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`,
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(data),
+                    }
+                  );
 
                   const json = await res.json();
 

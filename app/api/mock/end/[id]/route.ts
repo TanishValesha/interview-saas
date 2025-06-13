@@ -64,6 +64,13 @@ export async function POST(req: Request) {
 
   const { data } = await AIResponse.json();
 
+  if (data) {
+    await prisma.interview.update({
+      where: { id: interviewData.id },
+      data: { feedback: data },
+    });
+  }
+
   return NextResponse.json({
     success: true,
     message: "Feedback generated successfully",

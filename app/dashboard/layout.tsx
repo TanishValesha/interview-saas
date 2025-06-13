@@ -35,13 +35,18 @@ export default function RootLayout({
       >
         <Toaster richColors position="top-right" />
         <div
-          className="absolute right-0 top-0 w-[1500px] h-[400px] rounded-full translate-x-1/4 translate-y-[-50%]"
-          style={{
-            zIndex: -1,
-            background: `radial-gradient(circle, rgba(0,149,189,0.7) 0%, rgba(0,149,189,0.2) 40%, rgba(0,0,0,0) 70%)`,
-            filter: "blur(100px)",
-          }}
-        />
+          className="absolute inset-0 overflow-hidden pointer-events-none"
+          style={{ zIndex: 1 }}
+        >
+          <div
+            className="absolute -right-96 -top-48 w-[1500px] h-[300px] rounded-full"
+            style={{
+              background: `radial-gradient(circle, rgba(0,149,189,0.6) 0%, rgba(0,149,189,0.2) 40%, rgba(0,0,0,0) 70%)`,
+              filter: "blur(100px)",
+              mixBlendMode: "screen",
+            }}
+          />
+        </div>
 
         {/* Sidebar stays fixed */}
         <div className="h-screen">

@@ -53,6 +53,7 @@ export default function ListView({ slug }: { slug: string }) {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold mb-6">Interview Questions</h1>
           <Button
+            className="z-30"
             onClick={() => {
               router.push(`/dashboard/setup/${slug}`);
             }}

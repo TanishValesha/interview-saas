@@ -54,11 +54,11 @@ export default function BackgroundBeamsDemo() {
                 setLoading(true);
                 try {
                   const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`,
+                    `${process.env.NEXT_PUBLIC_API_URL}/subscribe`,
                     {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify(data),
+                      body: JSON.stringify({ email: data.email }),
                     }
                   );
 

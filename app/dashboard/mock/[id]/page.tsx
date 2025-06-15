@@ -229,14 +229,16 @@ export default function InterviewPage({
   };
 
   return (
-    <div className="flex h-screen flex-col text-gray-100 overflow-hidden pl-32">
+    <div className="flex h-screen flex-col text-gray-100 overflow-hidden pl-0 sm:pl-32">
       <main className="flex flex-1 flex-col md:flex-row overflow-hidden">
         {/* Left Panel */}
         <div className="w-full border-b border-gray-800 p-4 md:w-2/5 md:border-b-0 md:border-r">
           {/* <div className=" w-full overflow-hidden rounded-lg bg-gray-800"></div> */}
-          <WebcamStream />
+          <div>
+            <WebcamStream />
+          </div>
           <div className="mt-4 flex justify-start gap-3">
-            <Label className="text-md bg-gray-800 px-3 rounded-4xl">
+            <Label className="text-sm sm:text-md bg-gray-800 px-3 rounded-4xl">
               Questions Left: {15 - questionsArray.length}
             </Label>
             <Button
@@ -255,7 +257,7 @@ export default function InterviewPage({
               </Button>
             )}
           </div>
-          <div className="mt-2 text-sm text-gray-400 text-left">
+          <div className="mt-2 text-sm text-gray-400 text-left hidden sm:block">
             <p className="mb-1 text-md">
               Note: Interview can only be ended once or will automatically end
               when questions reach 0

@@ -47,87 +47,6 @@ const InterviewFeedbackDashboard = ({
   });
   const [activeTab, setActiveTab] = useState("overview");
   const { id } = use(params);
-  // Mock data based on the conversation shown
-  //   const feedbackData: FeedbackData = {
-  //     overallScore: 42,
-  //     recommendation: "MAYBE" as
-  //       | "MAYBE"
-  //       | "STRONG_HIRE"
-  //       | "HIRE"
-  //       | "NO_HIRE"
-  //       | "STRONG_NO_HIRE",
-  //     summary:
-  //       "Tanish demonstrates solid technical knowledge of OOP principles but struggles with deeper explanations and providing concrete examples when pressed for details.",
-  //     categoryScores: {
-  //       communication: 7,
-  //       technical: 6,
-  //       behavioral: 8,
-  //       answerQuality: 6,
-  //       engagement: 7,
-  //       pressureHandling: 5,
-  //     },
-  //     strengths: [
-  //       {
-  //         category: "Technical Knowledge",
-  //         description: "Clear understanding of core OOP principles",
-  //         example:
-  //           "Correctly identified Encapsulation, Inheritance, Polymorphism, and Abstraction as the four pillars",
-  //       },
-  //       {
-  //         category: "Communication",
-  //         description: "Articulate and professional in responses",
-  //         example:
-  //           "Provided structured explanation with practical applications in Spring Boot projects",
-  //       },
-  //       {
-  //         category: "Experience",
-  //         description: "Demonstrates real-world application knowledge",
-  //         example:
-  //           "Mentioned using OOP principles in Java with Spring Boot services and models",
-  //       },
-  //     ],
-  //     improvements: [
-  //       {
-  //         category: "Depth of Explanation",
-  //         issue: "Struggled to provide deeper examples when asked",
-  //         suggestion:
-  //           "Prepare specific code examples demonstrating polymorphism implementation",
-  //         example:
-  //           "Could have explained method overriding vs overloading with concrete code snippets",
-  //       },
-  //       {
-  //         category: "Pressure Handling",
-  //         issue: "Appeared uncertain when asked for deeper dive",
-  //         suggestion:
-  //           "Practice explaining complex concepts step-by-step under pressure",
-  //         example:
-  //           "Take a moment to structure thoughts before responding to complex questions",
-  //       },
-  //     ],
-  //     redFlags: [
-  //       {
-  //         concern: "Incomplete Response",
-  //         impact: "Shows potential knowledge gaps under pressure",
-  //         evidence:
-  //           "Failed to complete the polymorphism explanation when pressed for details",
-  //       },
-  //     ],
-  //     greenFlags: [
-  //       {
-  //         strength: "Professional Demeanor",
-  //         impact: "Maintains composure and politeness throughout",
-  //         evidence: "Responds professionally even when struggling with questions",
-  //       },
-  //       {
-  //         strength: "Practical Experience",
-  //         impact: "Shows real-world application of concepts",
-  //         evidence: "References actual projects with Spring Boot and Java",
-  //       },
-  //     ],
-  //     confidenceLevel: "BALANCED",
-  //     communicationStyle: "APPROPRIATE",
-  //     preparednessLevel: "WELL_PREPARED",
-  //   };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -169,15 +88,19 @@ const InterviewFeedbackDashboard = ({
   };
 
   const ScoreCircle = ({ score, label }: { score: number; label: string }) => (
-    <div className="flex flex-col items-center p-4 bg-neutral-900/50 rounded-lg border border-gray-700">
+    <div className="flex flex-col items-center p-3 sm:p-4 bg-neutral-900/50 rounded-lg border border-gray-700">
       <div
-        className={`relative w-16 h-16 rounded-full border-4 ${getScoreColor(score)} border-current flex items-center justify-center`}
+        className={`relative w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 ${getScoreColor(score)} border-current flex items-center justify-center`}
       >
-        <span className={`text-lg font-bold ${getScoreColor(score)}`}>
+        <span
+          className={`text-base sm:text-lg font-bold ${getScoreColor(score)}`}
+        >
           {score}
         </span>
       </div>
-      <span className="text-sm text-gray-300 mt-2 text-center">{label}</span>
+      <span className="text-xs sm:text-sm text-gray-300 mt-2 text-center leading-tight">
+        {label}
+      </span>
     </div>
   );
 
@@ -196,20 +119,20 @@ const InterviewFeedbackDashboard = ({
   }) => (
     <button
       onClick={() => onClick(id)}
-      className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+      className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 rounded-lg transition-all whitespace-nowrap ${
         active
           ? "bg-white text-black"
           : "text-white hover:text-white hover:bg-neutral-900"
       }`}
     >
-      <Icon size={18} />
-      <span>{label}</span>
+      <Icon size={16} className="sm:w-[18px] sm:h-[18px]" />
+      <span className="text-sm sm:text-base">{label}</span>
     </button>
   );
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center animate-spin text-white ">
+      <div className="flex justify-center items-center min-h-screen animate-spin text-white">
         <Loader className="w-7 h-7" />
       </div>
     );
@@ -218,36 +141,38 @@ const InterviewFeedbackDashboard = ({
   return (
     <>
       {feedbackData.overallScore > 0 && (
-        <div className="min-h-screen bg-transparent text-white p-6 z-30">
+        <div className="min-h-screen bg-transparent text-white p-3 sm:p-6 z-30 mt-14">
           <div className="max-w-6xl mx-auto">
             {/* Header */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h1 className="text-3xl font-bold text-white">
+            <div className="mb-6 sm:mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-3 sm:space-y-0">
+                <h1 className="text-xl sm:text-3xl font-bold text-white">
                   Interview Feedback
                 </h1>
                 <div
-                  className={`px-4 py-2 rounded-full text-white font-semibold ${getRecommendationColor(feedbackData.recommendation)} z-30`}
+                  className={`px-3 sm:px-4 py-2 rounded-full text-white font-semibold text-sm sm:text-base ${getRecommendationColor(feedbackData.recommendation)} z-30 text-center`}
                 >
                   HIRING STATUS:{" "}
                   {feedbackData.recommendation?.replace("_", " ")}
                 </div>
               </div>
-              <p className="text-gray-300 text-lg">{feedbackData.summary}</p>
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+                {feedbackData.summary}
+              </p>
             </div>
 
             {/* Overall Score Card */}
-            <div className="bg-neutral-900 rounded-xl p-6 mb-8 border border-transparent">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold mb-2">
+            <div className="bg-neutral-900 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 border border-transparent">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                <div className="flex-1">
+                  <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">
                     Overall Performance
                   </h2>
-                  <div className="flex items-center space-x-4">
-                    <div className="text-4xl font-bold text-white">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0">
+                    <div className="text-3xl sm:text-4xl font-bold text-white">
                       {feedbackData.overallScore}/60
                     </div>
-                    <div className="text-gray-400">
+                    <div className="text-gray-400 space-y-1 text-sm sm:text-base">
                       <div>
                         Confidence:{" "}
                         <span className="font-bold">
@@ -270,8 +195,8 @@ const InterviewFeedbackDashboard = ({
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm text-gray-400 mb-2">
+                <div className="text-left lg:text-right">
+                  <div className="text-sm text-gray-400 mb-1">
                     Java OOP Developer Position
                   </div>
                   <div className="text-sm text-gray-400">Tanish Valesha</div>
@@ -280,7 +205,7 @@ const InterviewFeedbackDashboard = ({
             </div>
 
             {/* Category Scores */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 mb-6 sm:mb-8">
               <ScoreCircle
                 score={feedbackData.categoryScores.communication}
                 label="Communication"
@@ -308,7 +233,7 @@ const InterviewFeedbackDashboard = ({
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex space-x-2 mb-6 overflow-x-auto">
+            <div className="flex space-x-1 sm:space-x-2 mb-4 sm:mb-6 overflow-x-auto pb-2 scrollbar-hide">
               <TabButton
                 id="overview"
                 label="Overview"
@@ -340,16 +265,16 @@ const InterviewFeedbackDashboard = ({
             </div>
 
             {/* Tab Content */}
-            <div className="bg-neutral-900 rounded-xl p-6 border border-gray-700">
+            <div className="bg-neutral-900 rounded-xl p-4 sm:p-6 border border-gray-700">
               {activeTab === "overview" && (
-                <div className="space-y-6">
-                  <h3 className="text-xl font-semibold flex items-center">
-                    <User className="mr-2" size={20} />
+                <div className="space-y-4 sm:space-y-6">
+                  <h3 className="text-lg sm:text-xl font-semibold flex items-center">
+                    <User className="mr-2 sm:w-5 sm:h-5" size={18} />
                     Performance Overview
                   </h3>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <h4 className="font-semibold text-green-400">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="space-y-3 sm:space-y-4">
+                      <h4 className="font-semibold text-green-400 text-sm sm:text-base">
                         Top Performing Areas
                       </h4>
                       {Object.entries(feedbackData.categoryScores)
@@ -360,19 +285,19 @@ const InterviewFeedbackDashboard = ({
                             key={category}
                             className="flex justify-between items-center p-3 bg-gray-700/50 rounded-lg"
                           >
-                            <span className="capitalize">
+                            <span className="capitalize text-sm sm:text-base">
                               {category.replace(/([A-Z])/g, " $1").trim()}
                             </span>
                             <span
-                              className={`font-bold ${getScoreColor(score)}`}
+                              className={`font-bold text-sm sm:text-base ${getScoreColor(score)}`}
                             >
                               {score}/10
                             </span>
                           </div>
                         ))}
                     </div>
-                    <div className="space-y-4">
-                      <h4 className="font-semibold text-yellow-400">
+                    <div className="space-y-3 sm:space-y-4">
+                      <h4 className="font-semibold text-yellow-400 text-sm sm:text-base">
                         Areas Needing Attention
                       </h4>
                       {Object.entries(feedbackData.categoryScores)
@@ -383,11 +308,11 @@ const InterviewFeedbackDashboard = ({
                             key={category}
                             className="flex justify-between items-center p-3 bg-gray-700/50 rounded-lg"
                           >
-                            <span className="capitalize">
+                            <span className="capitalize text-sm sm:text-base">
                               {category.replace(/([A-Z])/g, " $1").trim()}
                             </span>
                             <span
-                              className={`font-bold ${getScoreColor(score)}`}
+                              className={`font-bold text-sm sm:text-base ${getScoreColor(score)}`}
                             >
                               {score}/10
                             </span>
@@ -399,9 +324,9 @@ const InterviewFeedbackDashboard = ({
               )}
 
               {activeTab === "strengths" && (
-                <div className="space-y-6">
-                  <h3 className="text-xl font-semibold flex items-center text-green-400">
-                    <CheckCircle className="mr-2" size={20} />
+                <div className="space-y-4 sm:space-y-6">
+                  <h3 className="text-lg sm:text-xl font-semibold flex items-center text-green-400">
+                    <CheckCircle className="mr-2 sm:w-5 sm:h-5" size={18} />
                     Key Strengths
                   </h3>
                   {feedbackData.strengths.map((strength, index) => (
@@ -409,15 +334,17 @@ const InterviewFeedbackDashboard = ({
                       key={index}
                       className="bg-green-900/20 border border-green-700 rounded-lg p-4"
                     >
-                      <h4 className="font-semibold text-green-400 mb-2">
-                        {strength.category}
+                      <h4 className="font-semibold text-green-400 mb-2 text-sm sm:text-base">
+                        {strength.category.toUpperCase()}
                       </h4>
-                      <p className="text-gray-300 mb-3">
+                      <p className="text-gray-300 mb-3 text-sm sm:text-base leading-relaxed">
                         {strength.description}
                       </p>
                       <div className="bg-gray-700/50 rounded p-3">
-                        <span className="text-sm text-gray-400">Example: </span>
-                        <span className="text-gray-200 italic">
+                        <span className="text-xs sm:text-sm text-gray-400">
+                          Example:{" "}
+                        </span>
+                        <span className="text-gray-200 italic text-sm sm:text-base">
                           &quot;{strength.example}&quot;
                         </span>
                       </div>
@@ -427,9 +354,9 @@ const InterviewFeedbackDashboard = ({
               )}
 
               {activeTab === "improvements" && (
-                <div className="space-y-6">
-                  <h3 className="text-xl font-semibold flex items-center text-yellow-400">
-                    <TrendingUp className="mr-2" size={20} />
+                <div className="space-y-4 sm:space-y-6">
+                  <h3 className="text-lg sm:text-xl font-semibold flex items-center text-yellow-400">
+                    <TrendingUp className="mr-2 sm:w-5 sm:h-5" size={18} />
                     Areas for Improvement
                   </h3>
                   {feedbackData.improvements.map((improvement, index) => (
@@ -437,29 +364,31 @@ const InterviewFeedbackDashboard = ({
                       key={index}
                       className="bg-yellow-900/20 border border-yellow-700 rounded-lg p-4"
                     >
-                      <h4 className="font-semibold text-yellow-400 mb-2">
-                        {improvement.category}
+                      <h4 className="font-semibold text-yellow-400 mb-2 text-sm sm:text-base">
+                        {improvement.category.toUpperCase()}
                       </h4>
                       <div className="space-y-3">
                         <div>
-                          <span className="text-sm text-gray-400">Issue: </span>
-                          <span className="text-gray-300">
+                          <span className="text-xs sm:text-sm text-gray-400">
+                            Issue:{" "}
+                          </span>
+                          <span className="text-gray-300 text-sm sm:text-base">
                             {improvement.issue}
                           </span>
                         </div>
                         <div>
-                          <span className="text-sm text-gray-400">
+                          <span className="text-xs sm:text-sm text-gray-400">
                             Suggestion:{" "}
                           </span>
-                          <span className="text-gray-300">
+                          <span className="text-gray-300 text-sm sm:text-base">
                             {improvement.suggestion}
                           </span>
                         </div>
                         <div className="bg-gray-700/50 rounded p-3">
-                          <span className="text-sm text-gray-400">
+                          <span className="text-xs sm:text-sm text-gray-400">
                             Better Approach:{" "}
                           </span>
-                          <span className="text-gray-200 italic">
+                          <span className="text-gray-200 italic text-sm sm:text-base">
                             &quot;{improvement.example}&quot;
                           </span>
                         </div>
@@ -470,16 +399,19 @@ const InterviewFeedbackDashboard = ({
               )}
 
               {activeTab === "flags" && (
-                <div className="space-y-6">
-                  <h3 className="text-xl font-semibold flex items-center">
-                    <AlertTriangle className="mr-2" size={20} />
+                <div className="space-y-4 sm:space-y-6">
+                  <h3 className="text-lg sm:text-xl font-semibold flex items-center">
+                    <AlertTriangle className="mr-2 sm:w-5 sm:h-5" size={18} />
                     Key Insights
                   </h3>
 
                   {feedbackData.redFlags.length > 0 && (
                     <div className="space-y-4">
-                      <h4 className="font-semibold text-red-400 flex items-center">
-                        <XCircle className="mr-2" size={18} />
+                      <h4 className="font-semibold text-red-400 flex items-center text-sm sm:text-base">
+                        <XCircle
+                          className="mr-2 sm:w-[18px] sm:h-[18px]"
+                          size={16}
+                        />
                         Areas of Concern
                       </h4>
                       {feedbackData.redFlags.map((flag, index) => (
@@ -487,15 +419,17 @@ const InterviewFeedbackDashboard = ({
                           key={index}
                           className="bg-red-900/20 border border-red-700 rounded-lg p-4"
                         >
-                          <h5 className="font-semibold text-red-400 mb-2">
+                          <h5 className="font-semibold text-red-400 mb-2 text-sm sm:text-base">
                             {flag.concern}
                           </h5>
-                          <p className="text-gray-300 mb-2">{flag.impact}</p>
+                          <p className="text-gray-300 mb-2 text-sm sm:text-base leading-relaxed">
+                            {flag.impact}
+                          </p>
                           <div className="bg-gray-700/50 rounded p-3">
-                            <span className="text-sm text-gray-400">
+                            <span className="text-xs sm:text-sm text-gray-400">
                               Evidence:{" "}
                             </span>
-                            <span className="text-gray-200 italic">
+                            <span className="text-gray-200 italic text-sm sm:text-base">
                               &quot;{flag.evidence}&quot;
                             </span>
                           </div>
@@ -505,24 +439,28 @@ const InterviewFeedbackDashboard = ({
                   )}
 
                   <div className="space-y-4">
-                    <h4 className="font-semibold text-green-400 flex items-center">
-                      <Star className="mr-2" size={18} />
-                      Positive Highlights
+                    <h4 className="font-semibold text-green-400 flex items-center text-sm sm:text-base">
+                      <Star
+                        className="mr-2 sm:w-[18px] sm:h-[18px]"
+                        size={16}
+                      />
                     </h4>
                     {feedbackData.greenFlags.map((flag, index) => (
                       <div
                         key={index}
                         className="bg-green-900/20 border border-green-700 rounded-lg p-4"
                       >
-                        <h5 className="font-semibold text-green-400 mb-2">
+                        <h5 className="font-semibold text-green-400 mb-2 text-sm sm:text-base">
                           {flag.strength}
                         </h5>
-                        <p className="text-gray-300 mb-2">{flag.impact}</p>
+                        <p className="text-gray-300 mb-2 text-sm sm:text-base leading-relaxed">
+                          {flag.impact}
+                        </p>
                         <div className="bg-gray-700/50 rounded p-3">
-                          <span className="text-sm text-gray-400">
+                          <span className="text-xs sm:text-sm text-gray-400">
                             Evidence:{" "}
                           </span>
-                          <span className="text-gray-200 italic">
+                          <span className="text-gray-200 italic text-sm sm:text-base">
                             &quot;{flag.evidence}&quot;
                           </span>
                         </div>
@@ -534,17 +472,17 @@ const InterviewFeedbackDashboard = ({
             </div>
 
             {/* Action Items */}
-            <div className="mt-8 bg-blue-900/20 border border-blue-700 rounded-xl p-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-4 flex items-center">
-                <Target className="mr-2" size={20} />
+            <div className="mt-6 sm:mt-8 bg-blue-900/20 border border-blue-700 rounded-xl p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-blue-400 mb-4 flex items-center">
+                <Target className="mr-2 sm:w-5 sm:h-5" size={18} />
                 Next Steps
               </h3>
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div>
-                  <h4 className="font-semibold text-blue-300 mb-3">
+                  <h4 className="font-semibold text-blue-300 mb-3 text-sm sm:text-base">
                     Immediate Actions
                   </h4>
-                  <ul className="space-y-2 text-gray-300">
+                  <ul className="space-y-2 text-gray-300 text-sm sm:text-base">
                     <li>
                       • Practice explaining polymorphism with code examples
                     </li>
@@ -555,20 +493,20 @@ const InterviewFeedbackDashboard = ({
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-blue-300 mb-3">
+                  <h4 className="font-semibold text-blue-300 mb-3 text-sm sm:text-base">
                     Long-term Development
                   </h4>
-                  <ul className="space-y-2 text-gray-300">
+                  <ul className="space-y-2 text-gray-300 text-sm sm:text-base">
                     <li>• Build portfolio with OOP design examples</li>
                     <li>• Practice technical presentations</li>
                     <li>• Study system design principles</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-blue-300 mb-3">
+                  <h4 className="font-semibold text-blue-300 mb-3 text-sm sm:text-base">
                     Interview Strategy
                   </h4>
-                  <ul className="space-y-2 text-gray-300">
+                  <ul className="space-y-2 text-gray-300 text-sm sm:text-base">
                     <li>• Take time to structure complex answers</li>
                     <li>• Ask clarifying questions when uncertain</li>
                     <li>• Practice under timed conditions</li>

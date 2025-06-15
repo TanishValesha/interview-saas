@@ -83,8 +83,8 @@ export default function FeedbackView({ id }: { id: string }) {
 
   if (data) {
     return (
-      <div className="dark text-white p-6 rounded-lg">
-        <div className="grid gap-6 md:grid-cols-2 px-">
+      <div className="dark text-white sm:p-6 rounded-lg">
+        <div className="grid gap-6 md:grid-cols-2 grid-cols-1">
           {/* Strengths Column */}
           <Card className="border-none shadow-sm">
             <CardHeader className="bg-green-50 dark:bg-green-950/30 rounded-t-lg border-b border-green-100 dark:border-green-800/50 py-4">

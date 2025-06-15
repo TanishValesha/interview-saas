@@ -18,7 +18,7 @@ export default function SetupPagepp({
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 mt-14 sm:mt-0">
       {!testCompleted ? (
         <DeviceTest onComplete={handleDeviceTestComplete} />
       ) : (

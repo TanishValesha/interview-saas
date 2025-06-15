@@ -51,7 +51,9 @@ export default function ListView({ slug }: { slug: string }) {
     <div className="min-h-screen text-gray-100 dark">
       <div className="container mx-auto py-8 px-4">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold mb-6">Interview Questions</h1>
+          <h1 className="text-xl mt-10 sm:mt-0 sm:text-2xl font-bold mb-6 z-30">
+            Interview Questions
+          </h1>
           <Button
             className="z-30"
             onClick={() => {
@@ -66,7 +68,7 @@ export default function ListView({ slug }: { slug: string }) {
             <Link
               href={`/dashboard/question/${question.id}`}
               key={question.id}
-              className="flex items-start gap-4 p-6 bg-neutral-900 rounded-lg hover:bg-neutral-950 hover:scale-101 duration-200 cursor-pointer"
+              className="flex items-start gap-4 p-6 z-30 bg-neutral-900 rounded-lg hover:bg-neutral-950 hover:scale-101 duration-200 cursor-pointer"
               onClick={() => toggleCompleted(question.id)}
             >
               <div className="text-gray-500 font-mono text-sm pt-1 w-8">

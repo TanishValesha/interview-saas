@@ -172,7 +172,7 @@ export default function QuestionView({ id }: { id: string }) {
   return (
     <div className="min-h-screen font-sans text-gray-100 ">
       <div className="max-w-7xl mx-auto p-4">
-        <div className="mb-6">
+        <div className="mb-0 sm:mb-6 mt-10 sm:mt-0">
           <Button
             variant="ghost"
             size="icon"
@@ -186,14 +186,16 @@ export default function QuestionView({ id }: { id: string }) {
         <div className="space-y-6">
           {/* Question Card */}
           <div className="rounded-lg bg-neutral-900 shadow-sm overflow-hidden">
-            <div className="p-6">
+            <div className="p-6 z-30">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-100">Question</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-100 z-30">
+                  Question
+                </h2>
               </div>
 
-              <div className="border-t border-gray-800 my-4"></div>
+              <div className="border-t border-gray-800 my-4 z-30"></div>
 
-              <p className="text-gray-200 mb-6 font-bold">
+              <p className="text-sm sm:text-md text-gray-200 mb-6 font-bold z-30">
                 {questionData?.text}
               </p>
 
@@ -201,7 +203,9 @@ export default function QuestionView({ id }: { id: string }) {
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-medium text-gray-300">Your Answer</h3>
+                  <h3 className="font-medium text-sm sm:text-md text-gray-300">
+                    Your Answer
+                  </h3>
                   <div className="flex items-center gap-2">
                     <Button
                       variant="ghost"
@@ -224,7 +228,7 @@ export default function QuestionView({ id }: { id: string }) {
                       onClick={handleGenerateAnswer}
                     >
                       {b2loading && <Loader className="w-5 h-5 animate-spin" />}
-                      <span className="mr-2">✨</span>
+                      <span className="mr-1">✨</span>
                       Generate Answer
                     </Button>
                   </div>
@@ -234,14 +238,14 @@ export default function QuestionView({ id }: { id: string }) {
                   value={answer}
                   placeholder="Type your answer here..."
                   onChange={(e) => setAnswer(e.target.value)}
-                  className="min-h-[200px]  bg-neutral-900 border-gray-800 text-gray-200 focus:border-gray-700 focus:ring-gray-700"
+                  className="min-h-[200px] placeholder:text-sm sm:placeholder:text-md  bg-neutral-900 border-gray-800 text-gray-200 focus:border-gray-700 focus:ring-gray-700"
                 />
 
                 <div>
                   <Button
                     variant="secondary"
                     disabled={b1loading || questionData?.aiAnswer != null}
-                    className="bg-black hover:bg-neutral-950 cursor-pointer font-bold text-white"
+                    className="bg-black hover:bg-neutral-950 cursor-pointer font-bold text-white z-30"
                     onClick={handleUserSubmit}
                   >
                     {b1loading ? (

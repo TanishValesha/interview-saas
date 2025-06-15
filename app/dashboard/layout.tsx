@@ -39,7 +39,7 @@ export default function RootLayout({
           style={{ zIndex: 1 }}
         >
           <div
-            className="absolute -right-96 -top-48 w-[1500px] h-[300px] rounded-full"
+            className="absolute -right-96 -top-48 w-[1500px] h-[300px] rounded-full hidden sm:block"
             style={{
               background: `radial-gradient(circle, rgba(0,149,189,0.6) 0%, rgba(0,149,189,0.2) 40%, rgba(0,0,0,0) 70%)`,
               filter: "blur(100px)",

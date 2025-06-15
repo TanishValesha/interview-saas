@@ -177,11 +177,11 @@ function JobForm() {
     // <div className="min-h-screen flex items-center justify-center bg-black text-white p-4">
     <Card className="w-full shadow-lg bg-transparent border-none text-white font-medium">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold flex items-center gap-2 text-white">
+        <CardTitle className="text-2xl font-bold flex items-center gap-2 text-white z-30">
           <Briefcase className="h-6 w-6" />
           Create Job Interview Questions
         </CardTitle>
-        <CardDescription className="text-gray-400">
+        <CardDescription className="text-gray-400 z-30">
           Fill out the form below to get interview questions.
         </CardDescription>
       </CardHeader>

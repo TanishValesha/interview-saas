@@ -30,15 +30,14 @@ import { Groq } from "groq-sdk";
 // Securely store API key in environment variables
 const groq = new Groq({
   apiKey:
-    process.env.GROQ_API_KEY ||
-    "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",
+    process.env.GROQ_API_KEY
 });
 
 export async function generateResponse(prompt: string) {
   try {
     // Use a Groq-supported model (e.g., Mixtral or Llama)
     const response = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile", // or "llama3-70b-8192"
+      model: "openai/gpt-oss-20b", // or "llama3-70b-8192"
       messages: [{ role: "user", content: prompt }],
     });
 
